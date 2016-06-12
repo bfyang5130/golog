@@ -67,6 +67,7 @@ func main() {
 			//获得当天正确的地址
 			t := time.Now()
 			nt := t.Format(`20060102`)
+			fmt.Println(`get the read file dir`)
 			newfilepath := fmt.Sprintf(`%s/%s`, filepaths[filei], nt)
 			fmt.Println(newfilepath)
 			list, err := ioutil.ReadDir(newfilepath)
@@ -74,7 +75,7 @@ func main() {
 				fmt.Println("Wrong Dir:", filepaths[filei])
 				continue
 			}
-			fmt.Println(filepaths[filei])
+			fmt.Println(`start to reading the dir:`, newfilepath)
 			//判断目录的类型,日志目录分有iis和nginx
 			//判断是否存在nginx
 			//循环目录历表获得文件信息
@@ -91,12 +92,14 @@ func main() {
 					fmt.Println(configName + "不在配置文件中,不需要处理")
 					continue
 				}
+				//配置最后读取位置的参数
+				fitLastReadPosition := fmt.Sprintf(`%s/%s`, newfilepath, configName)
 				//获得最后处理到的位置
-				rfileSizes := fcaches.Get(newfilepath)
+				rfileSizes := fcaches.Get(fitLastReadPosition)
 				var rfileSize string
 				if rfileSizes == nil {
 					//没有记录位置设置初始位置
-					fcaches.Set(newfilepath, []byte(`0`))
+					fcaches.Set(fitLastReadPosition, []byte(`0`))
 					rfileSize = `0`
 				} else {
 					rfileSize = string(rfileSizes)
@@ -107,10 +110,10 @@ func main() {
 				} else {
 					fileSize = 0
 				}
-				fmt.Println(info.Name())
-				fmt.Println(`-------------new-------------`)
+				fmt.Println(`fitfilemessage:`, fitLastReadPosition)
+				fmt.Println(`-------------old position-------------`)
 				fmt.Println(fileSize)
-				fmt.Println(`-------------new-------------`)
+				fmt.Println(`-------------new position-------------`)
 				fmt.Println(info.Size())
 				fmt.Println(`-------------old-------------`)
 				if fileSize >= info.Size() {
@@ -118,11 +121,11 @@ func main() {
 					continue
 				}
 				//分为多个线程去处理每一个文件
-				//w.Add(1)
-				//go toFitOneFile(fileSize, newfilepath+info.Name(), newfilepath, nomatchfilepath, `nginx`)
+				w.Add(1)
+				go toFitOneFile(fileSize, fitLastReadPosition, fitLastReadPosition, nomatchfilepath, `nginx`)
 
 			}
-			//w.Wait()
+			w.Wait()
 		} else {
 			//这部分处理的是iis的日志，这里只需要处理昨天的文件就行了
 			//获得当天正确的地址
@@ -167,9 +170,9 @@ func main() {
 				continue
 			}
 			//分为多个线程去处理每一个文件
-			//w.Add(1)
-			//go toFitOneFile(fileSize, newfilepath, newfilepath, nomatchfilepath, `iis`)
-			//w.Wait()
+			w.Add(1)
+			go toFitOneFile(fileSize, newfilepath, newfilepath, nomatchfilepath, `iis`)
+			w.Wait()
 		}
 
 	}
