@@ -1,0 +1,294 @@
+!<arch>
+__.PKGDEF       0           0     0     644     16661     `
+go object windows amd64 go1.5.3 X:none
+build id "e88c55e5b275a083af5b8702ec7204e962337ba1"
+
+$$
+package qqwry
+	import runtime "runtime"
+	import binary "encoding/binary"
+	import mahonia "github.com/yinheli/mahonia"
+	import net "net"
+	import os "os"
+	const @"".INDEX_LEN = 0x7
+	const @"".REDIRECT_MODE_1 = 0x1
+	const @"".REDIRECT_MODE_2 = 0x2
+	import syscall "syscall" // indirect
+	type @"syscall".Handle uintptr
+	type @"syscall".Filetime struct { LowDateTime uint32; HighDateTime uint32 }
+	func (@"syscall".ftÂ·2 *@"syscall".Filetime "esc:0x1") Nanoseconds () (? int64) { var @"syscall".nsecÂ·3 int64; ; @"syscall".nsecÂ·3 = int64(@"syscall".ftÂ·2.HighDateTime) << 0x20 + int64(@"syscall".ftÂ·2.LowDateTime); @"syscall".nsecÂ·3 -= 0x19db1ded53e8000; @"syscall".nsecÂ·3 *= 0x64; return @"syscall".nsecÂ·3 }
+	type @"syscall".Win32finddata struct { FileAttributes uint32; CreationTime @"syscall".Filetime; LastAccessTime @"syscall".Filetime; LastWriteTime @"syscall".Filetime; FileSizeHigh uint32; FileSizeLow uint32; Reserved0 uint32; Reserved1 uint32; FileName [259]uint16; AlternateFileName [13]uint16 }
+	type @"os".dirInfo struct { @"os".data @"syscall".Win32finddata; @"os".needdata bool; @"os".path string; @"os".isempty bool }
+	import sync "sync" // indirect
+	type @"sync".Mutex struct { @"sync".state int32; @"sync".sema uint32 }
+	func (@"sync".mÂ·1 *@"sync".Mutex) Lock ()
+	func (@"sync".mÂ·1 *@"sync".Mutex) Unlock ()
+	type @"os".file struct { @"os".fd @"syscall".Handle; @"os".name string; @"os".dirinfo *@"os".dirInfo; @"os".l @"sync".Mutex; @"os".isConsole bool; @"os".lastbits []byte; @"os".readbuf []rune }
+	func (@"os".fileÂ·2 *@"os".file) @"os".close () (? error)
+	func (@"os".fÂ·2 *@"os".file "esc:0x1") @"os".isdir () (? bool) { return @"os".fÂ·2 != nil && @"os".fÂ·2.@"os".dirinfo != nil }
+	type @"os".FileMode uint32
+	func (@"os".mÂ·2 @"os".FileMode) IsDir () (? bool) { return @"os".mÂ·2 & @"os".FileMode(0x80000000) != @"os".FileMode(0x0) }
+	func (@"os".mÂ·2 @"os".FileMode) IsRegular () (? bool) { return @"os".mÂ·2 & @"os".FileMode(0x8f000000) == @"os".FileMode(0x0) }
+	func (@"os".mÂ·2 @"os".FileMode) Perm () (? @"os".FileMode) { return @"os".mÂ·2 & @"os".FileMode(0x1ff) }
+	func (@"os".mÂ·2 @"os".FileMode) String () (? string)
+	import time "time" // indirect
+	type @"time".zone struct { @"time".name string; @"time".offset int; @"time".isDST bool }
+	type @"time".zoneTrans struct { @"time".when int64; @"time".index uint8; @"time".isstd bool; @"time".isutc bool }
+	type @"time".Location struct { @"time".name string; @"time".zone []@"time".zone; @"time".tx []@"time".zoneTrans; @"time".cacheStart int64; @"time".cacheEnd int64; @"time".cacheZone *@"time".zone }
+	func (@"time".lÂ·2 *@"time".Location "esc:0x22") String () (? string)
+	func (@"time".lÂ·2 *@"time".Location "esc:0x1") @"time".firstZoneUsed () (? bool)
+	func (@"time".lÂ·2 *@"time".Location "esc:0x12") @"time".get () (? *@"time".Location)
+	func (@"time".lÂ·6 *@"time".Location "esc:0x32") @"time".lookup (@"time".secÂ·7 int64) (@"time".nameÂ·1 string, @"time".offsetÂ·2 int, @"time".isDSTÂ·3 bool, @"time".startÂ·4 int64, @"time".endÂ·5 int64)
+	func (@"time".lÂ·2 *@"time".Location "esc:0x1") @"time".lookupFirstZone () (? int)
+	func (@"time".lÂ·4 *@"time".Location "esc:0x1") @"time".lookupName (@"time".nameÂ·5 string "esc:0x1", @"time".unixÂ·6 int64) (@"time".offsetÂ·1 int, @"time".isDSTÂ·2 bool, @"time".okÂ·3 bool)
+	type @"time".Duration int64
+	func (@"time".dÂ·2 @"time".Duration) Hours () (? float64) { var @"time".hourÂ·3 @"time".Duration; ; @"time".hourÂ·3 = @"time".dÂ·2 / @"time".Duration(0x34630b8a000); var @"time".nsecÂ·4 @"time".Duration; ; @"time".nsecÂ·4 = @"time".dÂ·2 % @"time".Duration(0x34630b8a000); return float64(@"time".hourÂ·3) + float64(@"time".nsecÂ·4) * 8190022623310637111963488201822504381538623676021880892417778544696899264837610290203272971060556344039023584360473938041055625214280336402169897364226048p-553 }
+	func (@"time".dÂ·2 @"time".Duration) Minutes () (? float64) { var @"time".minÂ·3 @"time".Duration; ; @"time".minÂ·3 = @"time".dÂ·2 / @"time".Duration(0xdf8475800); var @"time".nsecÂ·4 @"time".Duration; ; @"time".nsecÂ·4 = @"time".dÂ·2 % @"time".Duration(0xdf8475800); return float64(@"time".minÂ·3) + float64(@"time".nsecÂ·4) * 7678146209353722106395056769533233877065564876941352542109479049699919628723768656821910653339403201031675627614471533358284117434246264392176261853609984p-547 }
+	func (@"time".dÂ·2 @"time".Duration) Nanoseconds () (? int64) { return int64(@"time".dÂ·2) }
+	func (@"time".dÂ·2 @"time".Duration) Seconds () (? float64) { var @"time".secÂ·3 @"time".Duration; ; @"time".secÂ·3 = @"time".dÂ·2 / @"time".Duration(0x3b9aca00); var @"time".nsecÂ·4 @"time".Duration; ; @"time".nsecÂ·4 = @"time".dÂ·2 % @"time".Duration(0x3b9aca00); return float64(@"time".secÂ·3) + float64(@"time".nsecÂ·4) * 7198262071269114660816079141112770740375861891461678802759824945047098083990024106014198994535558872472104883612039846078596891298747423852523262413111296p-541 }
+	func (@"time".dÂ·2 @"time".Duration) String () (? string)
+	type @"time".Month int
+	func (@"time".mÂ·2 @"time".Month) String () (? string) { return @"time".months[@"time".mÂ·2 - @"time".Month(0x1)] }
+	type @"time".Weekday int
+	func (@"time".dÂ·2 @"time".Weekday) String () (? string) { return @"time".days[@"time".dÂ·2] }
+	type @"time".Time struct { @"time".sec int64; @"time".nsec int32; @"time".loc *@"time".Location }
+	func (@"time".tÂ·2 @"time".Time "esc:0x12") Add (@"time".dÂ·3 @"time".Duration) (? @"time".Time) { @"time".tÂ·2.@"time".sec += int64(@"time".dÂ·3 / @"time".Duration(0x3b9aca00)); var @"time".nsecÂ·4 int32; ; @"time".nsecÂ·4 = int32(@"time".tÂ·2.@"time".nsec) + int32(@"time".dÂ·3 % @"time".Duration(0x3b9aca00)); if @"time".nsecÂ·4 >= 0x3b9aca00 { @"time".tÂ·2.@"time".sec++; @"time".nsecÂ·4 -= 0x3b9aca00 } else { if @"time".nsecÂ·4 < 0x0 { @"time".tÂ·2.@"time".sec--; @"time".nsecÂ·4 += 0x3b9aca00 } }; @"time".tÂ·2.@"time".nsec = @"time".nsecÂ·4; return @"time".tÂ·2 }
+	func (@"time".tÂ·2 @"time".Time "esc:0x12") AddDate (@"time".yearsÂ·3 int, @"time".monthsÂ·4 int, @"time".daysÂ·5 int) (? @"time".Time)
+	func (@"time".tÂ·2 @"time".Time "esc:0x1") After (@"time".uÂ·3 @"time".Time "esc:0x1") (? bool) { return @"time".tÂ·2.@"time".sec > @"time".uÂ·3.@"time".sec || @"time".tÂ·2.@"time".sec == @"time".uÂ·3.@"time".sec && @"time".tÂ·2.@"time".nsec > @"time".uÂ·3.@"time".nsec }
+	func (@"time".tÂ·2 @"time".Time "esc:0x9") AppendFormat (@"time".bÂ·3 []byte "esc:0x1a", @"time".layoutÂ·4 string "esc:0x9") (? []byte)
+	func (@"time".tÂ·2 @"time".Time "esc:0x1") Before (@"time".uÂ·3 @"time".Time "esc:0x1") (? bool) { return @"time".tÂ·2.@"time".sec < @"time".uÂ·3.@"time".sec || @"time".tÂ·2.@"time".sec == @"time".uÂ·3.@"time".sec && @"time".tÂ·2.@"time".nsec < @"time".uÂ·3.@"time".nsec }
+	func (@"time".tÂ·4 @"time".Time "esc:0x1") Clock () (@"time".hourÂ·1 int, @"time".minÂ·2 int, @"time".secÂ·3 int)
+	func (@"time".tÂ·4 @"time".Time "esc:0x1") Date () (@"time".yearÂ·1 int, @"time".monthÂ·2 @"time".Month, @"time".dayÂ·3 int)
+	func (@"time".tÂ·2 @"time".Time "esc:0x1") Day () (? int)
+	func (@"time".tÂ·2 @"time".Time "esc:0x1") Equal (@"time".uÂ·3 @"time".Time "esc:0x1") (? bool) { return @"time".tÂ·2.@"time".sec == @"time".uÂ·3.@"time".sec && @"time".tÂ·2.@"time".nsec == @"time".uÂ·3.@"time".nsec }
+	func (@"time".tÂ·2 @"time".Time "esc:0x9") Format (@"time".layoutÂ·3 string "esc:0x9") (? string)
+	func (@"time".tÂ·2 *@"time".Time "esc:0x1") GobDecode (@"time".dataÂ·3 []byte "esc:0x1") (? error)
+	func (@"time".tÂ·3 @"time".Time "esc:0x1") GobEncode () (? []byte, ? error)
+	func (@"time".tÂ·2 @"time".Time "esc:0x1") Hour () (? int)
+	func (@"time".tÂ·3 @"time".Time "esc:0x1") ISOWeek () (@"time".yearÂ·1 int, @"time".weekÂ·2 int)
+	func (@"time".tÂ·2 @"time".Time "esc:0x12") In (@"time".locÂ·3 *@"time".Location "esc:0x12") (? @"time".Time)
+	func (@"time".tÂ·2 @"time".Time "esc:0x1") IsZero () (? bool) { return @"time".tÂ·2.@"time".sec == 0x0 && @"time".tÂ·2.@"time".nsec == 0x0 }
+	func (@"time".tÂ·2 @"time".Time "esc:0x12") Local () (? @"time".Time) { @"time".tÂ·2.@"time".loc = @"time".Local; return @"time".tÂ·2 }
+	func (@"time".tÂ·2 @"time".Time "esc:0x12") Location () (? *@"time".Location) { var @"time".lÂ·3 *@"time".Location; ; @"time".lÂ·3 = @"time".tÂ·2.@"time".loc; if @"time".lÂ·3 == nil { @"time".lÂ·3 = @"time".UTC }; return @"time".lÂ·3 }
+	func (@"time".tÂ·3 @"time".Time "esc:0x1") MarshalBinary () (? []byte, ? error)
+	func (@"time".tÂ·3 @"time".Time "esc:0x9") MarshalJSON () (? []byte, ? error)
+	func (@"time".tÂ·3 @"time".Time "esc:0x9") MarshalText () (? []byte, ? error)
+	func (@"time".tÂ·2 @"time".Time "esc:0x1") Minute () (? int)
+	func (@"time".tÂ·2 @"time".Time "esc:0x1") Month () (? @"time".Month)
+	func (@"time".tÂ·2 @"time".Time "esc:0x1") Nanosecond () (? int) { return int(@"time".tÂ·2.@"time".nsec) }
+	func (@"time".tÂ·2 @"time".Time "esc:0x12") Round (@"time".dÂ·3 @"time".Duration) (? @"time".Time)
+	func (@"time".tÂ·2 @"time".Time "esc:0x1") Second () (? int)
+	func (@"time".tÂ·2 @"time".Time "esc:0x9") String () (? string)
+	func (@"time".tÂ·2 @"time".Time "esc:0x1") Sub (@"time".uÂ·3 @"time".Time "esc:0x1") (? @"time".Duration)
+	func (@"time".tÂ·2 @"time".Time "esc:0x12") Truncate (@"time".dÂ·3 @"time".Duration) (? @"time".Time)
+	func (@"time".tÂ·2 @"time".Time "esc:0x12") UTC () (? @"time".Time) { @"time".tÂ·2.@"time".loc = @"time".UTC; return @"time".tÂ·2 }
+	func (@"time".tÂ·2 @"time".Time "esc:0x1") Unix () (? int64) { return @"time".tÂ·2.@"time".sec + -0xe7791f700 }
+	func (@"time".tÂ·2 @"time".Time "esc:0x1") UnixNano () (? int64) { return (@"time".tÂ·2.@"time".sec + -0xe7791f700) * 0x3b9aca00 + int64(@"time".tÂ·2.@"time".nsec) }
+	func (@"time".tÂ·2 *@"time".Time "esc:0x1") UnmarshalBinary (@"time".dataÂ·3 []byte "esc:0x1") (? error)
+	func (@"time".tÂ·2 *@"time".Time "esc:0x1") UnmarshalJSON (@"time".dataÂ·3 []byte "esc:0x1") (@"time".errÂ·1 error)
+	func (@"time".tÂ·2 *@"time".Time "esc:0x1") UnmarshalText (@"time".dataÂ·3 []byte "esc:0x1") (@"time".errÂ·1 error)
+	func (@"time".tÂ·2 @"time".Time "esc:0x1") Weekday () (? @"time".Weekday)
+	func (@"time".tÂ·2 @"time".Time "esc:0x1") Year () (? int)
+	func (@"time".tÂ·2 @"time".Time "esc:0x1") YearDay () (? int)
+	func (@"time".tÂ·3 @"time".Time "esc:0x32") Zone () (@"time".nameÂ·1 string, @"time".offsetÂ·2 int)
+	func (@"time".tÂ·2 @"time".Time "esc:0x1") @"time".abs () (? uint64)
+	func (@"time".tÂ·5 @"time".Time "esc:0x1") @"time".date (@"time".fullÂ·6 bool) (@"time".yearÂ·1 int, @"time".monthÂ·2 @"time".Month, @"time".dayÂ·3 int, @"time".ydayÂ·4 int)
+	func (@"time".tÂ·4 @"time".Time "esc:0x32") @"time".locabs () (@"time".nameÂ·1 string, @"time".offsetÂ·2 int, @"time".absÂ·3 uint64)
+	type @"os".FileInfo interface { IsDir() (? bool); ModTime() (? @"time".Time); Mode() (? @"os".FileMode); Name() (? string); Size() (? int64); Sys() (? interface {}) }
+	type @"os".File struct { @"os".? *@"os".file }
+	func (@"os".fÂ·2 *@"os".File "esc:0x22") Chdir () (? error) { if @"os".fÂ·2 == nil { return @"os".ErrInvalid }; var @"os".eÂ·3 error; ; @"os".eÂ·3 = @"syscall".Fchdir(@"os".fÂ·2.@"os".file.@"os".fd); if @"os".eÂ·3 != nil { return (&@"os".PathError{ Op:"chdir", Path:@"os".fÂ·2.@"os".file.@"os".name, Err:@"os".eÂ·3 }) }; return nil }
+	func (@"os".fÂ·2 *@"os".File "esc:0x22") Chmod (@"os".modeÂ·3 @"os".FileMode) (? error)
+	func (@"os".fÂ·2 *@"os".File "esc:0x22") Chown (@"os".uidÂ·3 int, @"os".gidÂ·4 int) (? error) { if @"os".fÂ·2 == nil { return @"os".ErrInvalid }; var @"os".eÂ·5 error; ; @"os".eÂ·5 = @"syscall".Fchown(@"os".fÂ·2.@"os".file.@"os".fd, @"os".uidÂ·3, @"os".gidÂ·4); if @"os".eÂ·5 != nil { return (&@"os".PathError{ Op:"chown", Path:@"os".fÂ·2.@"os".file.@"os".name, Err:@"os".eÂ·5 }) }; return nil }
+	func (@"os".fileÂ·2 *@"os".File "esc:0x9") Close () (? error)
+	func (@"os".fileÂ·2 *@"os".File "esc:0x1") Fd () (? uintptr) { if @"os".fileÂ·2 == nil { return 0xffffffffffffffff }; return uintptr(@"os".fileÂ·2.@"os".file.@"os".fd) }
+	func (@"os".fÂ·2 *@"os".File "esc:0x32") Name () (? string) { return @"os".fÂ·2.@"os".file.@"os".name }
+	func (@"os".fÂ·3 *@"os".File "esc:0x10a") Read (@"os".bÂ·4 []byte "esc:0x1") (@"os".nÂ·1 int, @"os".errÂ·2 error)
+	func (@"os".fÂ·3 *@"os".File "esc:0x10a") ReadAt (@"os".bÂ·4 []byte "esc:0x1", @"os".offÂ·5 int64) (@"os".nÂ·1 int, @"os".errÂ·2 error)
+	func (@"os".fÂ·3 *@"os".File "esc:0x102") Readdir (@"os".nÂ·4 int) (@"os".fiÂ·1 []@"os".FileInfo, @"os".errÂ·2 error)
+	func (@"os".fÂ·3 *@"os".File "esc:0x102") Readdirnames (@"os".nÂ·4 int) (@"os".namesÂ·1 []string, @"os".errÂ·2 error)
+	func (@"os".fÂ·3 *@"os".File "esc:0x10a") Seek (@"os".offsetÂ·4 int64, @"os".whenceÂ·5 int) (@"os".retÂ·1 int64, @"os".errÂ·2 error)
+	func (@"os".fileÂ·3 *@"os".File "esc:0x12a") Stat () (? @"os".FileInfo, ? error)
+	func (@"os".fÂ·2 *@"os".File "esc:0x1") Sync () (? error)
+	func (@"os".fÂ·2 *@"os".File "esc:0x22") Truncate (@"os".sizeÂ·3 int64) (? error)
+	func (@"os".fÂ·3 *@"os".File "esc:0x10a") Write (@"os".bÂ·4 []byte "esc:0x9") (@"os".nÂ·1 int, @"os".errÂ·2 error)
+	func (@"os".fÂ·3 *@"os".File "esc:0x10a") WriteAt (@"os".bÂ·4 []byte "esc:0x1", @"os".offÂ·5 int64) (@"os".nÂ·1 int, @"os".errÂ·2 error)
+	func (@"os".fÂ·3 *@"os".File "esc:0x10a") WriteString (@"os".sÂ·4 string "esc:0x1") (@"os".nÂ·1 int, @"os".errÂ·2 error)
+	func (@"os".fÂ·3 *@"os".File "esc:0x9") @"os".pread (@"os".bÂ·4 []byte "esc:0x1", @"os".offÂ·5 int64) (@"os".nÂ·1 int, @"os".errÂ·2 error)
+	func (@"os".fÂ·3 *@"os".File "esc:0x9") @"os".pwrite (@"os".bÂ·4 []byte "esc:0x1", @"os".offÂ·5 int64) (@"os".nÂ·1 int, @"os".errÂ·2 error)
+	func (@"os".fÂ·3 *@"os".File "esc:0x9") @"os".read (@"os".bÂ·4 []byte "esc:0x1") (@"os".nÂ·1 int, @"os".errÂ·2 error)
+	func (@"os".fÂ·3 *@"os".File "esc:0x9") @"os".readConsole (@"os".bÂ·4 []byte "esc:0x1") (@"os".nÂ·1 int, @"os".errÂ·2 error)
+	func (@"os".fileÂ·3 *@"os".File "esc:0x102") @"os".readdir (@"os".nÂ·4 int) (@"os".fiÂ·1 []@"os".FileInfo, @"os".errÂ·2 error)
+	func (@"os".fileÂ·3 *@"os".File "esc:0x102") @"os".readdirnames (@"os".nÂ·4 int) (@"os".namesÂ·1 []string, @"os".errÂ·2 error)
+	func (@"os".fÂ·3 *@"os".File "esc:0x9") @"os".seek (@"os".offsetÂ·4 int64, @"os".whenceÂ·5 int) (@"os".retÂ·1 int64, @"os".errÂ·2 error)
+	func (@"os".fÂ·3 *@"os".File "esc:0x9") @"os".write (@"os".bÂ·4 []byte "esc:0x9") (@"os".nÂ·1 int, @"os".errÂ·2 error)
+	func (@"os".fÂ·3 *@"os".File "esc:0x9") @"os".writeConsole (@"os".bÂ·4 []byte "esc:0x9") (@"os".nÂ·1 int, @"os".errÂ·2 error)
+	type @"".QQwry struct { Ip string; Country string; City string; @"".filepath string; @"".file *@"os".File }
+	func (@"".thisÂ·1 *@"".QQwry "esc:0x9") Find (@"".ipÂ·2 string)
+	func (@"".thisÂ·2 *@"".QQwry "esc:0x1") @"".getMiddleOffset (@"".startÂ·3 uint32, @"".endÂ·4 uint32) (? uint32) {  var @"".recordsÂ·5 uint32; @"".recordsÂ·5 = (@"".endÂ·4 - @"".startÂ·3) / 0x7 >> 0x1; return @"".startÂ·3 + @"".recordsÂ·5 * 0x7 }
+	func (@"".thisÂ·2 *@"".QQwry "esc:0x9") @"".readArea (@"".offsetÂ·3 uint32) (? []byte)
+	func (@"".thisÂ·2 *@"".QQwry "esc:0x9") @"".readMode (@"".offsetÂ·3 uint32) (? byte)
+	func (@"".thisÂ·2 *@"".QQwry "esc:0x9") @"".readString (@"".offsetÂ·3 uint32) (? []byte)
+	func (@"".thisÂ·2 *@"".QQwry "esc:0x9") @"".readUInt24 () (? uint32)
+	func (@"".thisÂ·2 *@"".QQwry "esc:0x9") @"".searchIndex (@"".ipÂ·3 uint32) (? uint32)
+	func @"".NewQQwry (@"".fileÂ·2 string) (@"".qqwryÂ·1 *@"".QQwry) { @"".qqwryÂ·1 = (&@"".QQwry{ @"".filepath:@"".fileÂ·2 }); return  }
+	func @"".init ()
+	var @"time".months [12]string
+	var @"time".days [7]string
+	var @"time".Local *@"time".Location
+	var @"time".UTC *@"time".Location
+	var @"os".ErrInvalid error
+	func @"syscall".Fchdir (@"syscall".fdÂ·2 @"syscall".Handle) (@"syscall".errÂ·1 error) { return @"syscall".Errno(@"syscall".Errno(0x20000082)) }
+	type @"os".PathError struct { Op string; Path string; Err error }
+	func (@"os".eÂ·2 *@"os".PathError "esc:0x9") Error () (? string)
+	func @"syscall".Fchown (@"syscall".fdÂ·2 @"syscall".Handle, @"syscall".uidÂ·3 int, @"syscall".gidÂ·4 int) (@"syscall".errÂ·1 error) { return @"syscall".Errno(@"syscall".Errno(0x20000082)) }
+	type @"syscall".Errno uintptr
+	func (@"syscall".eÂ·2 @"syscall".Errno) Error () (? string)
+	func (@"syscall".eÂ·2 @"syscall".Errno) Temporary () (? bool) { return @"syscall".eÂ·2 == @"syscall".Errno(0x20000026) || @"syscall".eÂ·2 == @"syscall".Errno(0x2000003b) || @"syscall".eÂ·2.Timeout() }
+	func (@"syscall".eÂ·2 @"syscall".Errno) Timeout () (? bool) { return @"syscall".eÂ·2 == @"syscall".Errno(0x20000006) || @"syscall".eÂ·2 == @"syscall".Errno(0x2000007f) || @"syscall".eÂ·2 == @"syscall".Errno(0x20000079) }
+
+$$
+ _go_.o          0           0     0     644     37978     `
+go object windows amd64 go1.5.3 X:none
+
+!
+  go13ld"encoding/binary.a8github.com/yinheli/mahonia.a
+net.aos.a ş"".NewQQwry  À  ¨eH‹%(   H‹‰    H;avtHƒìH    H‰$è    H‹L$H‰ÏHƒù tN1ÀHƒÇèè    H‰L$H‹l$(H‰i8H‹l$ €=     uH‰i0H‰L$0HƒÄÃLA0L‰$H‰l$è    H‹L$ëİ‰ë®è    élÿÿÿ      :  type."".QQwry   L
+  "runtime.newobject   ~
+ä  runtime.duffzero   ° 6runtime.writeBarrierEnabled   ö
+  .runtime.writebarrierptr   –
+  0runtime.morestack_noctxt   00  "".autotmp_0000 type.*"".QQwry "".qqwry  type.*"".QQwry "".file  type.string 0R/03   8N  %U& TgclocalsÂ·41a13ac73c712c01973b8fe23f62d694 TgclocalsÂ·0c8aa8e80191a30eac23f1a218103f16   tK:/go/tmp/splitefile/src/github.com/yinheli/qqwry/qqwry.goş "".(*QQwry).Find  €  æeH‹%(   H‹‰    H„$XÿÿÿH;A†Ç  Hì(  H‹Œ$0  H‹Y8Hƒû uè    HÄ(  ÃHY0H‹H‰$H‹KH‰L$HÇD$    ÇD$   è    H‹D$ H‹\$(H‰œ$   H‹\$0H‰œ$˜   H‰„$€   H‰D$Ç$   H    H‰D$è    ƒø …  H‹œ$   Hƒû tè    HÄ(  ÃH‹œ$0  Hƒû „æ  H‹¬$€   €=     …º  H‰k@H‹œ$0  H‹¬$@  H‰kH‹¬$8  €=     …z  H‰+H‹œ$8  H‰$H‹œ$@  H‰\$è    H‹T$H‹L$H‹D$ H‰”$ø   H‰$H‰Œ$   H‰L$H‰„$  H‰D$è    H‹\$H‹D$ H‹T$(H‰œ$à   H‰„$è   H‰”$ğ   H‰”$Ø   H‰ŞHƒø†Ü  HƒÃ¶H‰õHƒø†Á  HƒÅ¶m Áå	ëH‰õHƒø†   HÿÅ¶m Áå	ëH‰´$È   Hƒø H‰„$Ğ   †s  ¶.Áå	ë‰ØH‹œ$0  H‰$‰D$è    ‹L$ƒù wè    HÄ(  Ã1ÛH‰œ$°   H‰œ$¸   H‰œ$À   1ÛH‰œ$  H‰œ$  H‰œ$   H‹œ$0  H‰$‰Ë‰L$8ƒÃ‰\$è    H‹Œ$0  ¶\$€û…°  H‰$è    ‹D$H‹œ$0  H‰$‰D$<‰D$è    H‹Œ$0  ¶\$€û…,  H‰$è    ‹D$H‹œ$0  H‰$‰D$è    H‹\$H‰œ$°   H‹\$H‰œ$¸   H‹\$ H‰œ$À   ‹D$<ƒÀH‹œ$0  H‰$‰D$è    H‹\$H‰œ$  H‹\$H‰œ$  H‹\$ H‰œ$   H    H‰$HÇD$   è    H‹\$H‰œ$ˆ   H\$`H‰$H‹œ$°   H‰\$H‹œ$¸   H‰\$H‹œ$À   H‰\$è    H\$ H|$H‹H‰H‹KH‰OH‹œ$ˆ   H‰$è    H‹L$H‹D$ H‹œ$0  Hƒû „ù   H‰„$¨   H‰CH‰Œ$    €=     …Á   H‰KH\$@H‰$H‹œ$  H‰\$H‹œ$  H‰\$H‹œ$   H‰\$è    H\$ H|$H‹H‰H‹KH‰OH‹œ$ˆ   H‰$è    H‹T$H‹L$ H‹œ$0  Hƒû tCH‰Œ$¨   H‰K(H‰”$    €=     uH‰S è    HÄ(  ÃLC L‰$H‰T$è    ëŞ‰ë¹LCL‰$H‰L$è    é,ÿÿÿ‰é ÿÿÿH‰$‹\$<‰\$è    H‹\$H‰œ$°   H‹D$H‹\$ H‰œ$À   ‹L$<H‰„$¸   HÿÀ‰ÀÈéÜıÿÿ€û…‘   H‰$è    ‹D$H‹œ$0  H‰$‰D$è    H‹\$H‰œ$°   H‹\$H‰œ$¸   H‹\$ H‰œ$À   H‹œ$0  H‰$‹\$8ƒÃ‰\$è    H‹\$H‰œ$  H‹\$H‰œ$  H‹\$ H‰œ$   é~ıÿÿH‰$‹\$8ƒÃ‰\$è    H‹\$H‰œ$°   H‹D$H‹\$ H‰œ$À   H‰„$¸   H‹œ$0  H‰$‹l$8H‰ÃHƒÃ‰Ûë‰\$è    H‹\$H‰œ$  H‹\$H‰œ$  H‹\$ H‰œ$   éóüÿÿè    è    è    è    H‰$H‰l$è    évúÿÿLC@L‰$H‰l$è    é3úÿÿ‰éúÿÿè    HÄ(  Ãè    éùÿÿV      z
+  &runtime.deferreturn   Ş
+  os.OpenFile   Ò  &os.(*File).CloseÂ·f   æ
+  "runtime.deferproc    
+  &runtime.deferreturn   ğ 6runtime.writeBarrierEnabled   Ê 6runtime.writeBarrierEnabled   š
+  net.ParseIP   
+  net.IP.To4   ì
+  ."".(*QQwry).searchIndex   Š	
+  &runtime.deferreturn   ¾
+
+  ("".(*QQwry).readMode   ü
+
+  ,"".(*QQwry).readUInt24   ¶
+  ("".(*QQwry).readMode   ô
+  ,"".(*QQwry).readUInt24   ¦
+  ,"".(*QQwry).readString   ¬
+  ("".(*QQwry).readArea   ˆ  go.string."gbk"   ¬
+  Jgithub.com/yinheli/mahonia.NewDecoder   °
+  2runtime.slicebytetostring   ‚
+  `github.com/yinheli/mahonia.Decoder.ConvertString   î 6runtime.writeBarrierEnabled   î
+  2runtime.slicebytetostring   À
+  `github.com/yinheli/mahonia.Decoder.ConvertString   ¤ 6runtime.writeBarrierEnabled   ¾
+  &runtime.deferreturn   ò
+  .runtime.writebarrierptr   ¢
+  .runtime.writebarrierptr   Ü
+  ,"".(*QQwry).readString   î
+  ,"".(*QQwry).readUInt24    
+  ,"".(*QQwry).readString   ¦
+  ("".(*QQwry).readArea   ¦
+  ,"".(*QQwry).readString   ¼
+  ("".(*QQwry).readArea   
+  $runtime.panicindex   ¬
+  $runtime.panicindex   º
+  $runtime.panicindex   È
+  $runtime.panicindex   è
+  .runtime.writebarrierptr   –
+  .runtime.writebarrierptr   º
+  &runtime.deferreturn   Ô
+  0runtime.morestack_noctxt   0Ğ  &"".autotmp_0012 Ïtype.[32]uint8 "".autotmp_0011 type.[32]uint8 "".autotmp_0009 type.[]uint8 "".autotmp_0008  type.string "".autotmp_0007 type.string "".autotmp_0006  type.int "".autotmp_0004  type.uint32 "".autotmp_0003  type.uint32 "".autotmp_0001 _type.net.IP (encoding/binary.bÂ·2 ¿type.[]uint8 "".enc ¿Ntype.github.com/yinheli/mahonia.Decoder  "".countryOffset ×type.uint32 "".area /type.[]uint8 "".country ïtype.[]uint8 "".offset ßtype.uint32 "".err ¯type.error "".file Ïtype.*os.File 
+"".ip type.string "".this  type.*"".QQwry P)ĞÏĞ’ÏĞôÏĞ™ÏĞıÏĞ € ØB1
+I.+,‹+	&	<
+<&Ÿ—0	<C3SA D ;w‡@BŸ)	q¥@K1r TgclocalsÂ·bbe2f308595eed0631fb6c42f0ddbda2 TgclocalsÂ·31306b1980c70cbcda6730b13a8a1270   tK:/go/tmp/splitefile/src/github.com/yinheli/qqwry/qqwry.goş("".(*QQwry).readMode  €  €eH‹%(   H‹‰    H;a†œ   HƒìXH‹\$`H‹k@H‰,$‹\$hH‰\$HÇD$    è    1ÀˆD$?HD$?Hƒø t_H‹\$`HÇÂ   HÇÁ   H‹k@H‰,$H‰D$@H‰D$H‰T$HH‰T$H‰L$PH‰L$è    H‹\$@Hƒ|$H v¶+@ˆl$pHƒÄXÃè    ‰ ëè    é@ÿÿÿ
+      |
+  os.(*File).Seek   š
+  os.(*File).Read   Ø
+  $runtime.panicindex   î
+  0runtime.morestack_noctxt   0°  
+"".autotmp_0013 1type.[1]uint8 "".mode /type.[]uint8 "".~r1  type.uint8 "".offset type.uint32 "".this  type.*"".QQwry °Œ¯° À ,ª$+!
+  =O TgclocalsÂ·41a13ac73c712c01973b8fe23f62d694 TgclocalsÂ·2c033e7f4f4a74cc7e9f368d1fec9f60   tK:/go/tmp/splitefile/src/github.com/yinheli/qqwry/qqwry.goş("".(*QQwry).readArea  À  ´eH‹%(   H‹‰    H;a†ö   Hƒì01ÛH‰\$HH‰\$PH‰\$XH‹\$8H‰$‹\$@‰\$è    H‹L$8¶\$€ût9€ût4H‰$‹\$@‰\$è    H‹T$H‹L$H‹D$ H‰T$HH‰L$PH‰D$XHƒÄ0ÃH‰$è    ‹D$ƒø u<HÇ$    1ÛH‰\$H‰\$è    H‹T$H‹L$ H‹D$(H‰T$HH‰L$PH‰D$XHƒÄ0ÃH‹\$8H‰$‰D$è    H‹T$H‹L$H‹D$ H‰T$HH‰L$PH‰D$XHƒÄ0Ãè    éæşÿÿ      ‚
+  ("".(*QQwry).readMode   Ì
+  ,"".(*QQwry).readString   ¤
+  ,"".(*QQwry).readUInt24   è
+  2runtime.stringtoslicebyte   Ò
+  ,"".(*QQwry).readString   ¢
+  0runtime.morestack_noctxt   P`  "".autotmp_0016  type.[]uint8 "".autotmp_0015  type.[]uint8 "".autotmp_0014  type.[]uint8 "".~r1  type.[]uint8 "".offset type.uint32 "".this  type.*"".QQwry "`n_`M_`4_`   (¸/ 
+4<5  @à TgclocalsÂ·89fe65749ce0afc971c0982226501ff0 TgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb   tK:/go/tmp/splitefile/src/github.com/yinheli/qqwry/qqwry.goş,"".(*QQwry).readString  à  ÊeH‹%(   H‹‰    H;a†Á  Hƒìx1ÛH‰œ$   H‰œ$˜   H‰œ$    H‹œ$€   H‹k@H‰,$‹œ$ˆ   H‰\$HÇD$    è    H    H‰$HÇD$    HÇD$   è    H‹\$H‰\$HH‹\$ H‰\$PH‹\$(H‰\$X1ö@ˆt$GHt$GHƒş „  HÇÇ   HÇD$p   H‹œ$€   H‹k@H‰,$H‰t$`H‰t$H‰|$hH‰|$H‹\$pH‰\$è    H‹L$HH‹D$PH‹T$XH‹|$hH‹t$`Hƒÿ †¯   ¶€û uH‰Œ$   H‰„$˜   H‰”$    HƒÄxÃHƒÿ v}¶.@ˆl$FH‰ÃHÿÃH9ÓwH‰\$PH¶l$F@ˆ+éVÿÿÿH-    H‰,$H‰L$H‰D$H‰T$H‰\$ è    H‹|$hH‹t$`H‹L$(H‹D$0H‹T$8H‰ÃHÿÃH‰\$PH‰T$XH‰L$Hë›è    è    ‰éİşÿÿè    éşÿÿ      ¼
+  os.(*File).Seek   Ê  type.[]uint8   €
+  "runtime.makeslice   î
+  os.(*File).Read   ê  type.[]uint8   ¤
+  "runtime.growslice   
+  $runtime.panicindex   œ
+  $runtime.panicindex   ¸
+  0runtime.morestack_noctxt   Pğ  "".autotmp_0019 ctype.uint8 "".autotmp_0018 atype.[1]uint8 "".buf /type.[]uint8 "".data _type.[]uint8 "".~r1  type.[]uint8 "".offset type.uint32 "".this  type.*"".QQwry ğ¤ïğ­ ğ 8Ö8*@&L
+*[  ]™›5* TgclocalsÂ·9d98bbb373475f3af6381201d6212574 TgclocalsÂ·d495504f655c9c1464dbe0268dd68788   tK:/go/tmp/splitefile/src/github.com/yinheli/qqwry/qqwry.goş."".(*QQwry).searchIndex  à  ÔeH‹%(   H‹‰    HD$˜H;A†A  Hìè   1Ûˆ\$Pˆ\$Qˆ\$Rˆ\$Sˆ\$Tˆ\$Uˆ\$Vˆ\$WH\$PHƒû „  HÇD$`   HÇD$h   H‰\$XH‹œ$ğ   H‹k@H‰,$HÇD$    HÇD$    è    H‹œ$ğ   H‹k@H‰,$H‹\$XH‰\$H‹\$`H‰\$H‹\$hH‰\$è    L‹D$hH‹|$XL‹œ$ğ   Iƒø‚n  HÇÆ   L‰„$˜   Hƒş †N  ¶H‰ıHƒş†7  HÿÅ¶m Áå	ëH‰ıHƒş†  HƒÅ¶m Áå	ëH‰ıH‰¼$ˆ   HƒşH‰´$   †æ  HƒÅ¶m Áå	ëA‰ÙH‹\$`L‰ÅHƒû‚½  HƒëHƒíI‰øHƒı tIƒÀH‰ŞH‰êH‰¬$°   Hƒû †‰  A¶L‰ÅHƒş†q  HÿÅ¶m Áå	ëL‰ÅHƒş†Q  HƒÅ¶m Áå	ëL‰ÅL‰„$    HƒşH‰´$¨   †   HƒÅ¶m Áå	ëA‰ØD‰L$8D‰D$DD‰ÀD)È½%I’$‰Æ÷å‹Ú‹îHëHÁë‰ÛÑëkÛDË‰ØI‹k@H‰,$‰D$@H‰\$HÇD$    è    1ÀˆD$IˆD$JˆD$KˆD$LˆD$MˆD$NˆD$OHD$IHƒø „  H‹œ$ğ   HÇÂ   HÇÁ   H‹k@H‰,$H‰„$Ğ   H‰D$H‰”$Ø   H‰T$H‰Œ$à   H‰L$è    L‹¬$à   L‹¤$Ğ   L‹œ$ğ   D‹T$@D‹L$8D‹D$D‹”$ø   Iƒı‚  HÇÇ   L‰¬$È   Hƒÿ †ä  A¶$L‰åHƒÿ†Ë  HÿÅ¶m Áå	ëL‰åHƒÿ†«  HƒÅ¶m Áå	ëL‰åL‰¤$¸   HƒÿH‰¼$À   †z  HƒÅ¶m Áå	ë‰ØD‰ÃD)Ëƒû…›  H‹œ$Ø   L‰íHƒû‚  HƒëHƒíM‰àHƒı tIƒÀH‰ŞH‰¬$€   Hƒû †N  A¶ãÿ   ‰ÚL‰ÃHƒş†.  HÿÃ¶Áãã ÿ  	Ó‰ÚL‰ÃL‰D$pHƒşH‰t$x†ı   HƒÃ¶Áãã  ÿ 	Ó‰\$<I‹k@H‰,$L‰d$H‹œ$Ø   H‰\$L‰l$è    H‹œ$à   Hƒû‚ª   H‹Œ$Ğ   HÇÆ   Hƒş †Š   ¶H‰ÍHƒşvwHÿÅ¶m Áå	ëH‰ÍHƒşv[HƒÅ¶m Áå	ëH‰ÍHƒşv>HƒÅ¶m Áå	ë‹¬$ø   9ëv‹\$<‰œ$   HÄè   ÃÇ„$       HÄè   Ãè    è    è    è    è    è    è    è    è    9ĞvE‰ĞéÏüÿÿ9ĞsE‰ÑéÃüÿÿ9Ğ…»üÿÿH‹œ$Ø   L‰íHƒû‚…   HƒëHƒíM‰àHƒı tIƒÀH‰ŞHƒû v`A¶ãÿ   ‰ÚL‰ÃHƒşvDHÿÃ¶Áãã ÿ  	Ó‰ÚL‰ÃHƒşv!HƒÃ¶Áãã  ÿ 	Ó‰œ$   HÄè   Ãè    è    è    è    è    è    è    è    è    ‰ élüÿÿè    è    è    è    è    è    è    è    è    è    ‰é÷ùÿÿè    é–ùÿÿF      ¢
+  os.(*File).Seek   ˆ
+  os.(*File).Read   œ	
+  os.(*File).Seek   Š
+  os.(*File).Read   Š
+  os.(*File).Read   Ô
+  $runtime.panicindex   â
+  $runtime.panicindex   ğ
+  $runtime.panicindex   ş
+  $runtime.panicindex   Œ
+  $runtime.panicslice   š
+  $runtime.panicindex   ¨
+  $runtime.panicindex   ¶
+  $runtime.panicindex   Ä
+  $runtime.panicslice   œ
+  $runtime.panicindex   ª
+  $runtime.panicindex   ¸
+  $runtime.panicindex   Æ
+  $runtime.panicslice   Ô
+  $runtime.panicindex   â
+  $runtime.panicindex   ğ
+  $runtime.panicindex   ş
+  $runtime.panicindex   Œ
+  $runtime.panicslice   ¨
+  $runtime.panicindex   ¶
+  $runtime.panicindex   Ä
+  $runtime.panicindex   Ò
+  $runtime.panicindex   à
+  $runtime.panicslice   î
+  $runtime.panicindex   ü
+  $runtime.panicindex   Š
+  $runtime.panicindex   ˜
+  $runtime.panicindex   ¦
+  $runtime.panicslice   Â
+  0runtime.morestack_noctxt   0Ğ  :"".autotmp_0040  type.uint32 "".autotmp_0039  type.uint32 "".autotmp_0038 ½type.[7]uint8 "".autotmp_0037  type.uint32 "".autotmp_0036  type.uint32 "".autotmp_0035  type.uint32 "".autotmp_0033 ¯type.[8]uint8 "".autotmp_0032  type.uint32 "".autotmp_0031  type.uint32 "".autotmp_0030  type.[]uint8 "".autotmp_0029  type.[]uint8 "".autotmp_0028  type.uint32 "".autotmp_0027  type.uint32 "".autotmp_0026  type.[]uint8 "".autotmp_0025  type.[]uint8 "".autotmp_0024  type.[]uint8 "".data ïtype.[]uint8 (encoding/binary.bÂ·2 _type.[]uint8 (encoding/binary.bÂ·2 type.[]uint8 (encoding/binary.bÂ·2 ¿type.[]uint8 "".offset ×type.uint32 "".buf /type.[]uint8 "".mid Ïtype.uint32 "".end Çtype.uint32 "".start ßtype.uint32 "".header Ÿtype.[]uint8 "".~r1  type.uint32 
+"".ip type.uint32 "".this  type.*"".QQwry 6&Ğ¯	ÏĞÏĞãÏĞ£ ğ ò&H'E†£
+0-b‡˜$z#'*+.¡'###  ½w¥‡ TgclocalsÂ·cb395d89503762333b1bfb09ba74eb12 TgclocalsÂ·eb228eb762367aefa0406429e114605d   tK:/go/tmp/splitefile/src/github.com/yinheli/qqwry/qqwry.goş,"".(*QQwry).readUInt24  €  şeH‹%(   H‹‰    H;a†Û   HƒìX1ÀˆD$=ˆD$>ˆD$?HD$=Hƒø „³   H‹\$`HÇÂ   HÇÁ   H‹k@H‰,$H‰D$@H‰D$H‰T$HH‰T$H‰L$PH‰L$è    H‹L$@H‹D$HH‹\$PHƒø vY¶ãÿ   ‰ÚH‰ËHƒøv>HÿÃ¶Áãã ÿ  	Ó‰ÚH‰ËHƒøvHƒÃ¶Áãã  ÿ 	Ó‰\$hHƒÄXÃè    è    è    ‰ éFÿÿÿè    éÿÿÿ      ê
+  os.(*File).Read   ´
+  $runtime.panicindex   Â
+  $runtime.panicindex   Ğ
+  $runtime.panicindex   ì
+  0runtime.morestack_noctxt    °  
+"".autotmp_0043 5type.[3]uint8 "".autotmp_0042  type.uint32 "".buf /type.[]uint8 "".~r0 type.uint32 "".this  type.*"".QQwry °º¯°' € (Æ+u  te' TgclocalsÂ·32bd5c6dc84e3e86dd35593b3922d3aa TgclocalsÂ·2c033e7f4f4a74cc7e9f368d1fec9f60   tK:/go/tmp/splitefile/src/github.com/yinheli/qqwry/qqwry.goş6"".(*QQwry).getMiddleOffset  `  X‹t$‹L$)ñ½%I’$‰È÷å‹Ú‹éHëHÁë‰ÛÑëkÛó‰\$Ã 0   "".~r2  type.uint32 "".end type.uint32 "".start type.uint32 "".this  type.*"".QQwry 0 0 Ò  TgclocalsÂ·0b86ef39f3fed835f14ba5f4d7c62fa2 TgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb   tK:/go/tmp/splitefile/src/github.com/yinheli/qqwry/qqwry.goş "".byte3ToUInt32     ˜eH‹%(   H‹‰    H;avlH‹T$H‹L$Hƒù vU¶ãÿ   ‰ØH‰ÓHƒùv:HÿÃ¶Áãã ÿ  	Ã‰ØH‰ÓHƒùvHƒÃ¶Áãã  ÿ 	Ã‰\$ Ãè    è    è    è    étÿÿÿ
+      Ü
+  $runtime.panicindex   ê
+  $runtime.panicindex   ø
+  $runtime.panicindex   †
+  0runtime.morestack_noctxt   @   "".autotmp_0046  type.uint32 "".~r1 0type.uint32 "".data  type.[]uint8   (Ü  
+ m# TgclocalsÂ·2fccd208efe70893f9ac8d682812ae72 TgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb   tK:/go/tmp/splitefile/src/github.com/yinheli/qqwry/qqwry.goş"".init  À  ÀeH‹%(   H‹‰    H;avC¶    €û t¶    €ûuÃè    Æ    è    è    è    è    Æ    Ãè    ë       2  "".initdoneÂ·   J  "".initdoneÂ·   `
+  "runtime.throwinit   p "".initdoneÂ·   |
+  (encoding/binary.init   †
+  >github.com/yinheli/mahonia.init   
+  net.init   š
+  os.init   ¦ "".initdoneÂ·   ´
+  0runtime.morestack_noctxt        ` ` æ` 
+ /1 TgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb TgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb   tK:/go/tmp/splitefile/src/github.com/yinheli/qqwry/qqwry.goş&type..hash."".QQwry    ŠeH‹%(   H‹‰    H;a†!  Hƒì H‹\$(H‰$Hƒ<$ „ı   H‹\$0H‰\$è    H‹D$H‹\$(H‰$Hƒ<$ „É   Hƒ$H‰D$0H‰D$è    H‹D$H‹\$(H‰$Hƒ<$ „   Hƒ$ H‰D$0H‰D$è    H‹D$H‹\$(H‰$Hƒ<$ t^Hƒ$0H‰D$0H‰D$è    H‹D$H‹\$(H‰$Hƒ<$ t,Hƒ$@H‰D$0H‰D$HÇD$   è    H‹\$H‰\$8HƒÄ Ã‰%    ëË‰%    ë™‰%    édÿÿÿ‰%    é+ÿÿÿ‰%    é÷şÿÿè    é»şÿÿ      z
+  runtime.strhash   Ô
+  runtime.strhash   ®
+  runtime.strhash   €
+  runtime.strhash   ä
+  runtime.memhash   ø
+  0runtime.morestack_noctxt   0@  "".~r2  type.uintptr "".h type.uintptr "".p  type.*"".QQwry @æ?@K Ğ Ğ  <” TgclocalsÂ·0b86ef39f3fed835f14ba5f4d7c62fa2 TgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb   tK:/go/tmp/splitefile/src/github.com/yinheli/qqwry/qqwry.goş"type..eq."".QQwry à	  Ì	eH‹%(   H‹‰    H;a†B  HƒìHH‹\$PHƒû „(  H‹3H‹KH‹\$XHƒû „  H‹H‹CH9Á…ñ  H‰t$8H‰4$H‰L$@H‰L$H‰T$(H‰T$H‰D$0H‰D$è    ¶\$ €û „·  H‹\$PHƒû „¡  H‹SH‹CH‹\$XHƒû „ƒ  H‹sH‹KH9È…h  H‰T$(H‰$H‰D$0H‰D$H‰t$8H‰t$H‰L$@H‰L$è    ¶\$ €û „.  H‹\$PHƒû „  H‹s H‹K(H‹\$XHƒû „ú   H‹S H‹C(H9Á…ß   H‰t$8H‰4$H‰L$@H‰L$H‰T$(H‰T$H‰D$0H‰D$è    ¶\$ €û „¥   H‹\$PHƒû „   H‹S0H‹C8H‹\$XHƒû txH‹s0H‹K8H9ÈuaH‰T$(H‰$H‰D$0H‰D$H‰t$8H‰t$H‰L$@H‰L$è    ¶\$ €û t+H‹l$PH‹]@L‹D$XI‹h@H9ët
+ÆD$` HƒÄHÃÆD$`HƒÄHÃÆD$` HƒÄHÃ‰ë„‰éjÿÿÿÆD$` HƒÄHÃ‰éÿşÿÿ‰éáşÿÿÆD$` HƒÄHÃ‰évşÿÿ‰éXşÿÿÆD$` HƒÄHÃ‰éîıÿÿ‰éÑıÿÿè    éšıÿÿ      ö
+   runtime.eqstring   Ø
+   runtime.eqstring   º
+   runtime.eqstring   Œ
+   runtime.eqstring   º	
+  0runtime.morestack_noctxt   0  "".autotmp_0054  type.string "".autotmp_0053  type.string "".autotmp_0052  type.string "".autotmp_0051  type.string "".autotmp_0050  type.string "".autotmp_0049  type.string "".autotmp_0048 ?type.string "".autotmp_0047 type.string "".~r2  type.bool "".q type.*"".QQwry "".p  type.*"".QQwry VÖ		" ğ ğ  zö TgclocalsÂ·3bb21ca8fe1d99a3e492463bd711418a TgclocalsÂ·a8eabfc4a4514ed6b3b0c61e9680e440   tK:/go/tmp/splitefile/src/github.com/yinheli/qqwry/qqwry.goşTgclocalsÂ·0c8aa8e80191a30eac23f1a218103f16                   şTgclocalsÂ·41a13ac73c712c01973b8fe23f62d694                  ş&go.string.hdr."gbk"                       go.string."gbk"   şgo.string."gbk"   gbk  şTgclocalsÂ·31306b1980c70cbcda6730b13a8a1270 @  @             @   @        şTgclocalsÂ·bbe2f308595eed0631fb6c42f0ddbda2 @  @                         şTgclocalsÂ·2c033e7f4f4a74cc7e9f368d1fec9f60                   şTgclocalsÂ·41a13ac73c712c01973b8fe23f62d694                  şTgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb           şTgclocalsÂ·89fe65749ce0afc971c0982226501ff0             şTgclocalsÂ·d495504f655c9c1464dbe0268dd68788 (  (          	       şTgclocalsÂ·9d98bbb373475f3af6381201d6212574 (  (                şTgclocalsÂ·eb228eb762367aefa0406429e114605d (  (              €   şTgclocalsÂ·cb395d89503762333b1bfb09ba74eb12 (  (                şTgclocalsÂ·2c033e7f4f4a74cc7e9f368d1fec9f60                   şTgclocalsÂ·32bd5c6dc84e3e86dd35593b3922d3aa                  şTgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb           şTgclocalsÂ·0b86ef39f3fed835f14ba5f4d7c62fa2             şTgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb           şTgclocalsÂ·2fccd208efe70893f9ac8d682812ae72             şTgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb           şTgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb           ş0"".initdoneÂ·  type.uint8   ş"".NewQQwryÂ·f              "".NewQQwry   ş&"".(*QQwry).FindÂ·f               "".(*QQwry).Find   ş."".(*QQwry).readModeÂ·f              ("".(*QQwry).readMode   ş."".(*QQwry).readAreaÂ·f              ("".(*QQwry).readArea   ş2"".(*QQwry).readStringÂ·f              ,"".(*QQwry).readString   ş4"".(*QQwry).searchIndexÂ·f              ."".(*QQwry).searchIndex   ş2"".(*QQwry).readUInt24Â·f              ,"".(*QQwry).readUInt24   ş<"".(*QQwry).getMiddleOffsetÂ·f              6"".(*QQwry).getMiddleOffset   ş&"".byte3ToUInt32Â·f               "".byte3ToUInt32   ş"".initÂ·f              "".init   şTgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb           şTgclocalsÂ·0b86ef39f3fed835f14ba5f4d7c62fa2             şTgclocalsÂ·a8eabfc4a4514ed6b3b0c61e9680e440              şTgclocalsÂ·3bb21ca8fe1d99a3e492463bd711418a             ş.type..hashfunc."".QQwry              &type..hash."".QQwry   ş*type..eqfunc."".QQwry              "type..eq."".QQwry   ş$type..alg."".QQwry                        .type..hashfunc."".QQwry     *type..eqfunc."".QQwry   ş"runtime.gcbits.01    ş8go.string.hdr."*qqwry.QQwry"                       0go.string."*qqwry.QQwry"   ş0go.string."*qqwry.QQwry"    *qqwry.QQwry  şTgo.string.hdr."func(*qqwry.QQwry, string)"                       Lgo.string."func(*qqwry.QQwry, string)"   şLgo.string."func(*qqwry.QQwry, string)" @  6func(*qqwry.QQwry, string)  ş8type.func(*"".QQwry, string)                   ½ñãÆ 3                                                                                                                      0€  runtime.algarray   @  "runtime.gcbits.01   P  Tgo.string.hdr."func(*qqwry.QQwry, string)"   p  Jgo.weak.type.*func(*"".QQwry, string)   €  "runtime.zerovalue    € 8type.func(*"".QQwry, string)   Ğ  8type.func(*"".QQwry, string)   €  type.*"".QQwry     type.string   ş|go.typelink.func(*qqwry.QQwry, string)	func(*"".QQwry, string)              8type.func(*"".QQwry, string)   şrgo.string.hdr."func(*qqwry.QQwry, uint32, uint32) uint32"             )          jgo.string."func(*qqwry.QQwry, uint32, uint32) uint32"   şjgo.string."func(*qqwry.QQwry, uint32, uint32) uint32" `  Tfunc(*qqwry.QQwry, uint32, uint32) uint32  şVtype.func(*"".QQwry, uint32, uint32) uint32 À  À              uXçr 3                                                                                                                                    0€  runtime.algarray   @  "runtime.gcbits.01   P  rgo.string.hdr."func(*qqwry.QQwry, uint32, uint32) uint32"   p  hgo.weak.type.*func(*"".QQwry, uint32, uint32) uint32   €  "runtime.zerovalue    € Vtype.func(*"".QQwry, uint32, uint32) uint32   Ğ° Vtype.func(*"".QQwry, uint32, uint32) uint32   €  type.*"".QQwry     type.uint32      type.uint32   °  type.uint32   ş¸go.typelink.func(*qqwry.QQwry, uint32, uint32) uint32	func(*"".QQwry, uint32, uint32) uint32              Vtype.func(*"".QQwry, uint32, uint32) uint32   ş.go.string.hdr."[]uint8"                       &go.string."[]uint8"   ş&go.string."[]uint8"   []uint8  ştype.[]uint8                   ß~.8                                                         0   runtime.algarray   @  "runtime.gcbits.01   P  .go.string.hdr."[]uint8"   p  *go.weak.type.*[]uint8   €  "runtime.zerovalue     type.uint8   ş6go.typelink.[]uint8	[]uint8              type.[]uint8   şdgo.string.hdr."func(*qqwry.QQwry, uint32) []uint8"             "          \go.string."func(*qqwry.QQwry, uint32) []uint8"   ş\go.string."func(*qqwry.QQwry, uint32) []uint8" P  Ffunc(*qqwry.QQwry, uint32) []uint8  şHtype.func(*"".QQwry, uint32) []uint8 °  °              *mbt 3                                                                                                                            0€  runtime.algarray   @  "runtime.gcbits.01   P  dgo.string.hdr."func(*qqwry.QQwry, uint32) []uint8"   p  Zgo.weak.type.*func(*"".QQwry, uint32) []uint8   €  "runtime.zerovalue    € Htype.func(*"".QQwry, uint32) []uint8   Ğ  Htype.func(*"".QQwry, uint32) []uint8   €  type.*"".QQwry     type.uint32      type.[]uint8   şœgo.typelink.func(*qqwry.QQwry, uint32) []uint8	func(*"".QQwry, uint32) []uint8              Htype.func(*"".QQwry, uint32) []uint8   ş`go.string.hdr."func(*qqwry.QQwry, uint32) uint8"                        Xgo.string."func(*qqwry.QQwry, uint32) uint8"   şXgo.string."func(*qqwry.QQwry, uint32) uint8" P  Bfunc(*qqwry.QQwry, uint32) uint8  şDtype.func(*"".QQwry, uint32) uint8 °  °              ~ÉëA 3                                                                                                                            0€  runtime.algarray   @  "runtime.gcbits.01   P  `go.string.hdr."func(*qqwry.QQwry, uint32) uint8"   p  Vgo.weak.type.*func(*"".QQwry, uint32) uint8   €  "runtime.zerovalue    € Dtype.func(*"".QQwry, uint32) uint8   Ğ  Dtype.func(*"".QQwry, uint32) uint8   €  type.*"".QQwry     type.uint32      type.uint8   ş”go.typelink.func(*qqwry.QQwry, uint32) uint8	func(*"".QQwry, uint32) uint8              Dtype.func(*"".QQwry, uint32) uint8   şRgo.string.hdr."func(*qqwry.QQwry) uint32"                       Jgo.string."func(*qqwry.QQwry) uint32"   şJgo.string."func(*qqwry.QQwry) uint32" @  4func(*qqwry.QQwry) uint32  ş6type.func(*"".QQwry) uint32                   Uøœ 3                                                                                                                    0€  runtime.algarray   @  "runtime.gcbits.01   P  Rgo.string.hdr."func(*qqwry.QQwry) uint32"   p  Hgo.weak.type.*func(*"".QQwry) uint32   €  "runtime.zerovalue    € 6type.func(*"".QQwry) uint32   Ğ 6type.func(*"".QQwry) uint32   €  type.*"".QQwry     type.uint32   şxgo.typelink.func(*qqwry.QQwry) uint32	func(*"".QQwry) uint32              6type.func(*"".QQwry) uint32   şbgo.string.hdr."func(*qqwry.QQwry, uint32) uint32"             !          Zgo.string."func(*qqwry.QQwry, uint32) uint32"   şZgo.string."func(*qqwry.QQwry, uint32) uint32" P  Dfunc(*qqwry.QQwry, uint32) uint32  şFtype.func(*"".QQwry, uint32) uint32 °  °              Á2° 3                                                                                                                            0€  runtime.algarray   @  "runtime.gcbits.01   P  bgo.string.hdr."func(*qqwry.QQwry, uint32) uint32"   p  Xgo.weak.type.*func(*"".QQwry, uint32) uint32   €  "runtime.zerovalue    € Ftype.func(*"".QQwry, uint32) uint32   Ğ  Ftype.func(*"".QQwry, uint32) uint32   €  type.*"".QQwry     type.uint32      type.uint32   ş˜go.typelink.func(*qqwry.QQwry, uint32) uint32	func(*"".QQwry, uint32) uint32              Ftype.func(*"".QQwry, uint32) uint32   ş(go.string.hdr."Find"                        go.string."Find"   ş go.string."Find"   
+Find  ş8go.string.hdr."func(string)"                       0go.string."func(string)"   ş0go.string."func(string)"    func(string)  ş"type.func(string)                 ŠÇ¹¾ 3                                                                                                              0€  runtime.algarray   @  "runtime.gcbits.01   P  8go.string.hdr."func(string)"   p  4go.weak.type.*func(string)   €  "runtime.zerovalue    € "type.func(string)   Ğ "type.func(string)   €  type.string   şJgo.typelink.func(string)	func(string)              "type.func(string)   ş>go.string.hdr."getMiddleOffset"                       6go.string."getMiddleOffset"   ş6go.string."getMiddleOffset"     getMiddleOffset  şPgo.string.hdr."github.com/yinheli/qqwry"                       Hgo.string."github.com/yinheli/qqwry"   şHgo.string."github.com/yinheli/qqwry" @  2github.com/yinheli/qqwry  ş"go.importpath."".                       Hgo.string."github.com/yinheli/qqwry"   şVgo.string.hdr."func(uint32, uint32) uint32"                       Ngo.string."func(uint32, uint32) uint32"   şNgo.string."func(uint32, uint32) uint32" @  8func(uint32, uint32) uint32  ş@type.func(uint32, uint32) uint32 °  °              ¤3 3                                                                                                                            0€  runtime.algarray   @  "runtime.gcbits.01   P  Vgo.string.hdr."func(uint32, uint32) uint32"   p  Rgo.weak.type.*func(uint32, uint32) uint32   €  "runtime.zerovalue    € @type.func(uint32, uint32) uint32   Ğ  @type.func(uint32, uint32) uint32   €  type.uint32     type.uint32      type.uint32   ş†go.typelink.func(uint32, uint32) uint32	func(uint32, uint32) uint32              @type.func(uint32, uint32) uint32   ş0go.string.hdr."readArea"                       (go.string."readArea"   ş(go.string."readArea"    readArea  şHgo.string.hdr."func(uint32) []uint8"                       @go.string."func(uint32) []uint8"   ş@go.string."func(uint32) []uint8" 0  *func(uint32) []uint8  ş2type.func(uint32) []uint8                   p[Ï_ 3                                                                                                                    0€  runtime.algarray   @  "runtime.gcbits.01   P  Hgo.string.hdr."func(uint32) []uint8"   p  Dgo.weak.type.*func(uint32) []uint8   €  "runtime.zerovalue    € 2type.func(uint32) []uint8   Ğ 2type.func(uint32) []uint8   €  type.uint32     type.[]uint8   şjgo.typelink.func(uint32) []uint8	func(uint32) []uint8              2type.func(uint32) []uint8   ş0go.string.hdr."readMode"                       (go.string."readMode"   ş(go.string."readMode"    readMode  şDgo.string.hdr."func(uint32) uint8"                       <go.string."func(uint32) uint8"   ş<go.string."func(uint32) uint8" 0  &func(uint32) uint8  ş.type.func(uint32) uint8                   “¦C 3                                                                                                                    0€  runtime.algarray   @  "runtime.gcbits.01   P  Dgo.string.hdr."func(uint32) uint8"   p  @go.weak.type.*func(uint32) uint8   €  "runtime.zerovalue    € .type.func(uint32) uint8   Ğ .type.func(uint32) uint8   €  type.uint32     type.uint8   şbgo.typelink.func(uint32) uint8	func(uint32) uint8              .type.func(uint32) uint8   ş4go.string.hdr."readString"             
+          ,go.string."readString"   ş,go.string."readString"    readString  ş4go.string.hdr."readUInt24"             
+          ,go.string."readUInt24"   ş,go.string."readUInt24"    readUInt24  ş:go.string.hdr."func() uint32"                       2go.string."func() uint32"   ş2go.string."func() uint32"    func() uint32  ş$type.func() uint32                 ºêLÆ 3                                                                                                              0€  runtime.algarray   @  "runtime.gcbits.01   P  :go.string.hdr."func() uint32"   p  6go.weak.type.*func() uint32   €  "runtime.zerovalue    € $type.func() uint32   Ğ€ $type.func() uint32   €  type.uint32   şNgo.typelink.func() uint32	func() uint32              $type.func() uint32   ş6go.string.hdr."searchIndex"                       .go.string."searchIndex"   ş.go.string."searchIndex"    searchIndex  şFgo.string.hdr."func(uint32) uint32"                       >go.string."func(uint32) uint32"   ş>go.string."func(uint32) uint32" 0  (func(uint32) uint32  ş0type.func(uint32) uint32                   Ä(	Ş 3                                                                                                                    0€  runtime.algarray   @  "runtime.gcbits.01   P  Fgo.string.hdr."func(uint32) uint32"   p  Bgo.weak.type.*func(uint32) uint32   €  "runtime.zerovalue    € 0type.func(uint32) uint32   Ğ 0type.func(uint32) uint32   €  type.uint32     type.uint32   şfgo.typelink.func(uint32) uint32	func(uint32) uint32              0type.func(uint32) uint32   ştype.*"".QQwry                  ÓlAä 6                                                                                                                                                                                                                                                                                                                                                                                                                                              b0   runtime.algarray   @  "runtime.gcbits.01   P  8go.string.hdr."*qqwry.QQwry"   p  .go.weak.type.**"".QQwry   €  "runtime.zerovalue     type."".QQwry   `  type.*"".QQwry   Àğ type.*"".QQwry   ğ  (go.string.hdr."Find"     "type.func(string)      8type.func(*"".QQwry, string)   °   "".(*QQwry).Find   À   "".(*QQwry).Find   Ğ  >go.string.hdr."getMiddleOffset"   à  "go.importpath."".   ğ  @type.func(uint32, uint32) uint32   €  Vtype.func(*"".QQwry, uint32, uint32) uint32     6"".(*QQwry).getMiddleOffset      6"".(*QQwry).getMiddleOffset   °  0go.string.hdr."readArea"   À  "go.importpath."".   Ğ  2type.func(uint32) []uint8   à  Htype.func(*"".QQwry, uint32) []uint8   ğ  ("".(*QQwry).readArea   €  ("".(*QQwry).readArea     0go.string.hdr."readMode"      "go.importpath."".   °  .type.func(uint32) uint8   À  Dtype.func(*"".QQwry, uint32) uint8   Ğ  ("".(*QQwry).readMode   à  ("".(*QQwry).readMode   ğ  4go.string.hdr."readString"   €  "go.importpath."".     2type.func(uint32) []uint8      Htype.func(*"".QQwry, uint32) []uint8   °  ,"".(*QQwry).readString   À  ,"".(*QQwry).readString   Ğ  4go.string.hdr."readUInt24"   à  "go.importpath."".   ğ  $type.func() uint32   €  6type.func(*"".QQwry) uint32     ,"".(*QQwry).readUInt24      ,"".(*QQwry).readUInt24   °  6go.string.hdr."searchIndex"   À  "go.importpath."".   Ğ  0type.func(uint32) uint32   à  Ftype.func(*"".QQwry, uint32) uint32   ğ  ."".(*QQwry).searchIndex   €  ."".(*QQwry).searchIndex   ş&runtime.gcbits.5501   U ş6go.string.hdr."qqwry.QQwry"                       .go.string."qqwry.QQwry"   ş.go.string."qqwry.QQwry"    qqwry.QQwry  ş$go.string.hdr."Ip"                       go.string."Ip"   şgo.string."Ip"   Ip  ş.go.string.hdr."Country"                       &go.string."Country"   ş&go.string."Country"   Country  ş(go.string.hdr."City"                        go.string."City"   ş go.string."City"   
+City  ş0go.string.hdr."filepath"                       (go.string."filepath"   ş(go.string."filepath"    filepath  ş(go.string.hdr."file"                        go.string."file"   ş go.string."file"   
+file  ş*go.string.hdr."QQwry"                       "go.string."QQwry"   ş"go.string."QQwry"   QQwry  ştype."".QQwry      H       H       Ş!1                                                                                                                                                                                                                              0                                       @                                               ,0  $type..alg."".QQwry   @  &runtime.gcbits.5501   P  6go.string.hdr."qqwry.QQwry"   p  type.*"".QQwry   €  "runtime.zerovalue   À type."".QQwry   À  $go.string.hdr."Ip"   à  type.string     .go.string.hdr."Country"   °  type.string   à  (go.string.hdr."City"   €  type.string   °  0go.string.hdr."filepath"   À  "go.importpath."".   Ğ  type.string   €  (go.string.hdr."file"     "go.importpath."".      type.*os.File   `Ğ type."".QQwry   Ğ  *go.string.hdr."QQwry"   à  "go.importpath."".   ğ  type."".QQwry   ş type..hashfunc32                        ,runtime.memhash_varlen   ştype..eqfunc32                        .runtime.memequal_varlen   ştype..alg32                         type..hashfunc32     type..eqfunc32   şruntime.gcbits.      ş2go.string.hdr."[32]uint8"             	          *go.string."[32]uint8"   ş*go.string."[32]uint8"    [32]uint8  ştype.[32]uint8 À  À                œYÿ¨ ‘                                                                        0  type..alg32   @  runtime.gcbits.   P  2go.string.hdr."[32]uint8"   p  .go.weak.type.*[32]uint8   €  "runtime.zerovalue     type.uint8      type.[]uint8   ş>go.typelink.[32]uint8	[32]uint8              type.[32]uint8   ş0go.string.hdr."[1]uint8"                       (go.string."[1]uint8"   ş(go.string."[1]uint8"    [1]uint8  ştype.[1]uint8 À  À               16Ê ‘                                                                       0@  runtime.algarray   @  runtime.gcbits.   P  0go.string.hdr."[1]uint8"   p  ,go.weak.type.*[1]uint8   €  "runtime.zerovalue     type.uint8      type.[]uint8   ş:go.typelink.[1]uint8	[1]uint8              type.[1]uint8   ş0go.string.hdr."[8]uint8"                       (go.string."[8]uint8"   ş(go.string."[8]uint8"    [8]uint8  ştype.[8]uint8 À  À               >ù0´ ‘                                                                       0   runtime.algarray   @  runtime.gcbits.   P  0go.string.hdr."[8]uint8"   p  ,go.weak.type.*[8]uint8   €  "runtime.zerovalue     type.uint8      type.[]uint8   ş:go.typelink.[8]uint8	[8]uint8              type.[8]uint8   ştype..hashfunc7                       ,runtime.memhash_varlen   ştype..eqfunc7                       .runtime.memequal_varlen   ştype..alg7                        type..hashfunc7     type..eqfunc7   ş0go.string.hdr."[7]uint8"                       (go.string."[7]uint8"   ş(go.string."[7]uint8"    [7]uint8  ştype.[7]uint8 À  À               ÕÏÕÿ ‘                                                                       0  type..alg7   @  runtime.gcbits.   P  0go.string.hdr."[7]uint8"   p  ,go.weak.type.*[7]uint8   €  "runtime.zerovalue     type.uint8      type.[]uint8   ş:go.typelink.[7]uint8	[7]uint8              type.[7]uint8   ştype..hashfunc3                       ,runtime.memhash_varlen   ştype..eqfunc3                       .runtime.memequal_varlen   ştype..alg3                        type..hashfunc3     type..eqfunc3   ş0go.string.hdr."[3]uint8"                       (go.string."[3]uint8"   ş(go.string."[3]uint8"    [3]uint8  ştype.[3]uint8 À  À               Â¹Rİ ‘                                                                       0  type..alg3   @  runtime.gcbits.   P  0go.string.hdr."[3]uint8"   p  ,go.weak.type.*[3]uint8   €  "runtime.zerovalue     type.uint8      type.[]uint8   ş:go.typelink.[3]uint8	[3]uint8              type.[3]uint8   ş.go.string.hdr."runtime"                       &go.string."runtime"   ş&go.string."runtime"   runtime  ş,go.importpath.runtime.                       &go.string."runtime"   ş>go.string.hdr."encoding/binary"                       6go.string."encoding/binary"   ş6go.string."encoding/binary"     encoding/binary  ş<go.importpath.encoding/binary.                       6go.string."encoding/binary"   şTgo.string.hdr."github.com/yinheli/mahonia"                       Lgo.string."github.com/yinheli/mahonia"   şLgo.string."github.com/yinheli/mahonia" @  6github.com/yinheli/mahonia  şRgo.importpath.github.com/yinheli/mahonia.                       Lgo.string."github.com/yinheli/mahonia"   ş&go.string.hdr."net"                       go.string."net"   şgo.string."net"   net  ş$go.importpath.net.                       go.string."net"   ş$go.string.hdr."os"                       go.string."os"   şgo.string."os"   os  ş"go.importpath.os.                       go.string."os"   ş,type..hash."".QQwryÂ·f              &type..hash."".QQwry   ş(type..eq."".QQwryÂ·f              "type..eq."".QQwry   ş"runtime.zerovalue      ÿÿgo13ld
