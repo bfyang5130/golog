@@ -272,7 +272,7 @@ func Convertip_tiny(ip string) (ipCountry, ipProvince, ipCity string) {
 	ipdot := strings.Split(ip, `.`)
 	//fmt.Println(ipdot[0])
 	//读取IP二进制文件
-	fi, err := os.Open("./source/tinyipdata.dat")
+	fi, err := os.Open("/home/golangpath/src/logFit/source/tinyipdata.dat")
 
 	if err != nil {
 		//任务中不想出错，读不到再说吧
