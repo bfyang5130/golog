@@ -21,10 +21,17 @@ import (
 )
 
 var (
-	w           sync.WaitGroup
+	w sync.WaitGroup
+
 	fcaches     = filecache.Handler{"/home/golangpath/src/logFit/cache", 43200}
 	logFileName = flag.String("log", "/home/golangpath/src/logFit/cServer.log", "Log file name")
 	fixconf     = goini.SetConfig(`/home/golangpath/src/logFit/config/config.ini`)
+	/**
+
+	fcaches     = filecache.Handler{"./cache", 43200}
+	logFileName = flag.String("log", "./cServer.log", "Log file name")
+	fixconf     = goini.SetConfig(`./config/config.ini`)
+	*/
 )
 
 func main() {
@@ -240,6 +247,16 @@ func toFitOneFile(fileSize int64, filepath string, configName string, nomatchfil
 处理一堆的行，上面的count定义为500，那么这里就是处理500行的数据
 */
 func toFitLines(fitlines []myfunc.LineMessage, configName string, nomatchfilepath string) {
+	//因为传进来的configName是一个完整的路径，所以通过完整的路径来判断代理和站点
+	//如果字符串包括17_nginx_proxy
+	var proxy int
+	if strings.Contains(configName, `17_nginx_proxy`) {
+		proxy = 17
+	} else {
+		proxy = 21
+	}
+	//处理站点visitwebsite := `www.tuandai.com`
+	visitwebsite := myfunc.FitWebsite(configName)
 	//原来的表
 	//mysqlArrList := []myfunc.MysqlVisitDate{}
 	//新表
@@ -286,7 +303,9 @@ func toFitLines(fitlines []myfunc.LineMessage, configName string, nomatchfilepat
 			browser := myfunc.Browsers(match[10])
 			mobile := myfunc.Mobiles(match[10])
 			date_Reg, _ := myfunc.UtcTimeToNormalDateTime(match[5])
-			mysqlArrList = append(mysqlArrList, myfunc.Accesslogss{match[1], ipCountry, ipProvince, ipCity, date_Reg, request_url[0], request_url[1], request_url[2], scode, sbody, match[9], match[10], plat, browser, mobile, sRtime, onefitline.FileSizePosition})
+			//处理时间为collectiontime,就是一个集合时间
+			collectiontime := myfunc.ToCollectiontime(date_Reg)
+			mysqlArrList = append(mysqlArrList, myfunc.Accesslogss{match[1], ipCountry, ipProvince, ipCity, date_Reg, request_url[0], request_url[1], request_url[2], scode, sbody, match[9], match[10], plat, browser, mobile, sRtime, visitwebsite, proxy, collectiontime, onefitline.FileSizePosition})
 		}
 	}
 	if len(mysqlArrList) > 0 {
@@ -298,6 +317,15 @@ func toFitLines(fitlines []myfunc.LineMessage, configName string, nomatchfilepat
 处理一堆的行，上面的count定义为500，那么这里就是处理500行的数据//iis的分析功能
 */
 func toFitIisLines(fitlines []myfunc.LineMessage, configName string, nomatchfilepath string) {
+	//因为传进来的configName是一个完整的路径，所以通过完整的路径来判断代理和站点
+	//如果字符串包括17_nginx_proxy
+	var proxy int
+	if strings.Contains(configName, `41_iis`) {
+		proxy = 41
+	} else {
+		proxy = 140
+	}
+	visitwebsite := `www.tuandai.com`
 	//原来的表
 	//mysqlArrList := []myfunc.MysqlVisitDate{}
 	//新表
@@ -318,6 +346,8 @@ func toFitIisLines(fitlines []myfunc.LineMessage, configName string, nomatchfile
 		ipCountry, ipProvince, ipCity := myfunc.Convertip_tiny(ip1)
 		//时间
 		date_Reg := fmt.Sprintf(`%s %s`, iisarrays[0], iisarrays[1])
+		//处理时间为collectiontime,就是一个集合时间
+		collectiontime := myfunc.ToCollectiontime(date_Reg)
 		request_method := iisarrays[3]
 		request_url := fmt.Sprintf(`%s?%s`, iisarrays[4], iisarrays[5])
 		//IIS里没有这个协议的直接给空
@@ -331,7 +361,7 @@ func toFitIisLines(fitlines []myfunc.LineMessage, configName string, nomatchfile
 		plat := myfunc.Platforms(newAgent)
 		browser := myfunc.Browsers(newAgent)
 		mobile := myfunc.Mobiles(newAgent)
-		mysqlArrList = append(mysqlArrList, myfunc.Accesslogss{ip1, ipCountry, ipProvince, ipCity, date_Reg, request_method, request_url, request_protocol, scode, sbody, iisarrays[6], newAgent, plat, browser, mobile, sRtime, onefitline.FileSizePosition})
+		mysqlArrList = append(mysqlArrList, myfunc.Accesslogss{ip1, ipCountry, ipProvince, ipCity, date_Reg, request_method, request_url, request_protocol, scode, sbody, iisarrays[6], newAgent, plat, browser, mobile, sRtime, visitwebsite, proxy, collectiontime, onefitline.FileSizePosition})
 
 	}
 	if len(mysqlArrList) > 0 {

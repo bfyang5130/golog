@@ -27,17 +27,13 @@ func InsertIndb(matchs []Accesslogss, fcaches filecache.Handler, fixconf *goini.
 		defer db.Close()
 		db.SetMaxOpenConns(10)
 		db.SetMaxIdleConns(10)
-		//原表
-		//stmt, err := db.Prepare(`INSERT INTO AccessLogss (Ip1, date_reg, request_url, status_code, body_size, from_url, agent, request_time) VALUES (?, ?,?, ?, ?,?, ?, ?)`)
 		//新表
-		stmt, err := db.Prepare(`INSERT INTO AccessLogss (Ip1,country,province,city, date_reg, request_method,request_url,request_protocol,status_code, body_size, from_url, agent,plat,bower,mobile_plat, request_time,visitwebsite) VALUES (?,?,?,?,?,?, ?,?, ?, ?,?, ?, ?,?,?,?,?)`)
+		stmt, err := db.Prepare(`INSERT INTO AccessLogss (Ip1,country,province,city, date_reg, request_method,request_url,request_protocol,status_code, body_size, from_url, agent,plat,bower,mobile_plat, request_time,visitwebsite,proxy,collectimtime) VALUES (?,?,?,?,?,?, ?,?, ?, ?,?, ?, ?,?,?,?,?,?,?)`)
 		checkErr(err, "str prepare", matchs[0].Marksize, fcaches, configName)
 		for _, oneMatch := range matchs {
 			fmt.Println("-------------------------------")
-			//原表
-			//res, err := stmt.Exec(oneMatch.Ip1, oneMatch.DateReg, oneMatch.Request_method, oneMatch.Request_url, oneMatch.request_protocol, oneMatch.StatusCode, oneMatch.BodySize, oneMatch.FromUrl, oneMatch.Agent, oneMatch.RequestTime)
 			//新表
-			res, err := stmt.Exec(oneMatch.Ip1, oneMatch.Country, oneMatch.Province, oneMatch.City, oneMatch.DateReg, oneMatch.Request_method, oneMatch.Request_url, oneMatch.Request_protocol, oneMatch.StatusCode, oneMatch.BodySize, oneMatch.FromUrl, oneMatch.Agent, oneMatch.Plat, oneMatch.Bower, oneMatch.Mobile_plat, oneMatch.RequestTime, configName)
+			res, err := stmt.Exec(oneMatch.Ip1, oneMatch.Country, oneMatch.Province, oneMatch.City, oneMatch.DateReg, oneMatch.Request_method, oneMatch.Request_url, oneMatch.Request_protocol, oneMatch.StatusCode, oneMatch.BodySize, oneMatch.FromUrl, oneMatch.Agent, oneMatch.Plat, oneMatch.Bower, oneMatch.Mobile_plat, oneMatch.RequestTime, oneMatch.Visitwebsite, oneMatch.Proxy, oneMatch.Collectiontime)
 			checkErr(err, "str Exec fail", oneMatch.Marksize, fcaches, configName)
 			num, err := res.RowsAffected()
 			checkErr(err, "get row fail", oneMatch.Marksize, fcaches, configName)
@@ -63,18 +59,13 @@ func InsertIisIndb(matchs []Accesslogss, fcaches filecache.Handler, fixconf *goi
 		}
 		defer db.Close()
 		db.SetMaxOpenConns(10)
-		db.SetMaxIdleConns(10)
-		//原表
-		//stmt, err := db.Prepare(`INSERT INTO IisAccessLog (Ip1, date_reg, request_url, status_code, body_size, from_url, agent, request_time) VALUES (?, ?,?, ?, ?,?, ?, ?)`)
-		//新表
-		stmt, err := db.Prepare(`INSERT INTO IisAccessLog (Ip1,country,province,city, date_reg, request_method,request_url,request_protocol,status_code, body_size, from_url, agent,plat,bower,mobile_plat, request_time,visitwebsite) VALUES (?,?,?,?,?,?, ?,?, ?, ?,?, ?, ?,?,?,?,?)`)
+		db.SetMaxIdleConns(10) //新表
+		stmt, err := db.Prepare(`INSERT INTO IisAccessLog (Ip1,country,province,city, date_reg, request_method,request_url,request_protocol,status_code, body_size, from_url, agent,plat,bower,mobile_plat, request_time,visitwebsite,proxy,collectimtime) VALUES (?,?,?,?,?,?, ?,?, ?, ?,?, ?, ?,?,?,?,?,?,?)`)
 		checkErr(err, "str prepare", matchs[0].Marksize, fcaches, configName)
 		for _, oneMatch := range matchs {
 			fmt.Println("-------------------------------")
-			//原表
-			//res, err := stmt.Exec(oneMatch.Ip1, oneMatch.DateReg, oneMatch.Request_method, oneMatch.Request_url, oneMatch.request_protocol, oneMatch.StatusCode, oneMatch.BodySize, oneMatch.FromUrl, oneMatch.Agent, oneMatch.RequestTime)
 			//新表
-			res, err := stmt.Exec(oneMatch.Ip1, oneMatch.Country, oneMatch.Province, oneMatch.City, oneMatch.DateReg, oneMatch.Request_method, oneMatch.Request_url, oneMatch.Request_protocol, oneMatch.StatusCode, oneMatch.BodySize, oneMatch.FromUrl, oneMatch.Agent, oneMatch.Plat, oneMatch.Bower, oneMatch.Mobile_plat, oneMatch.RequestTime, configName)
+			res, err := stmt.Exec(oneMatch.Ip1, oneMatch.Country, oneMatch.Province, oneMatch.City, oneMatch.DateReg, oneMatch.Request_method, oneMatch.Request_url, oneMatch.Request_protocol, oneMatch.StatusCode, oneMatch.BodySize, oneMatch.FromUrl, oneMatch.Agent, oneMatch.Plat, oneMatch.Bower, oneMatch.Mobile_plat, oneMatch.RequestTime, oneMatch.Visitwebsite, oneMatch.Proxy, oneMatch.Collectiontime)
 			checkErr(err, "str Exec fail", oneMatch.Marksize, fcaches, configName)
 			num, err := res.RowsAffected()
 			checkErr(err, "get row fail", oneMatch.Marksize, fcaches, configName)
@@ -128,6 +119,9 @@ type Accesslogss struct {
 	Bower            string
 	Mobile_plat      string
 	RequestTime      float64
+	Visitwebsite     string
+	Proxy            int
+	Collectiontime   string
 	Marksize         int64
 }
 

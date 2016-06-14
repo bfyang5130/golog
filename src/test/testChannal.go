@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 )
 
 var (
@@ -10,17 +11,24 @@ var (
 )
 
 func main() {
+	configName := `dfdcdc/dfdfd/cdcdsadf/dfdfdd/www.go.com.access.log`
+	website := strings.Split(configName, `/`)
+	logname := website[len(website)-1]
+	splitlog := strings.Split(logname, `.`)
+	visitwebsite := strings.Replace(logname, splitlog[len(splitlog)-1], ``, -1)
+	visitwebsite = strings.Replace(visitwebsite, splitlog[len(splitlog)-2], ``, -1)
+	visitwebsite = strings.Replace(visitwebsite, `..`, ``, -1)
 	//定义一个控制主线程退出的处理
-	intcount = 1
+	//intcount = 1
 
 	//定义一个信道
-	intChannel := make(chan int, 10)
+	//intChannel := make(chan int, 10)
 	//生成一个线程用来往通道里面放东西
-	go Product(intChannel)
+	//go Product(intChannel)
 	//生成10个线程取东西
-	for j := 0; j < 10; j++ {
-		go Consumer(intChannel, j)
-	}
+	//for j := 0; j < 10; j++ {
+	//	go Consumer(intChannel, j)
+	//}
 	/**
 	for i := 0; i < 1000; i++ {
 		intChannel <- i
@@ -30,7 +38,7 @@ func main() {
 	}
 	*/
 	//退出堵塞
-	<-isOut
+	//<-isOut
 }
 
 func Product(queue chan<- int) {

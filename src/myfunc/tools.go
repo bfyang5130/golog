@@ -273,6 +273,7 @@ func Convertip_tiny(ip string) (ipCountry, ipProvince, ipCity string) {
 	//fmt.Println(ipdot[0])
 	//读取IP二进制文件
 	fi, err := os.Open("/home/golangpath/src/logFit/source/tinyipdata.dat")
+	//fi, err := os.Open("./source/tinyipdata.dat")
 
 	if err != nil {
 		//任务中不想出错，读不到再说吧
@@ -384,4 +385,51 @@ func CheckFileSize(configfile string) (fileSize int64) {
 func FileExist(filename string) bool {
 	_, err := os.Stat(filename)
 	return err == nil || os.IsExist(err)
+}
+
+//返回一个集合时间,我不会告诉你什么叫集合时间
+func ToCollectiontime(date string) (coldate string) {
+	//时间格式为2016-06-14 10:06:57
+	if date == `` {
+		coldate = `0000-00-00 00:00:00`
+		return coldate
+	}
+	//将时间用:切分
+	minuteTime := strings.Split(date, `:`)
+	if len(minuteTime) < 1 {
+		coldate = `0000-00-00 00:00:00`
+		return coldate
+	}
+	marktime, err := strconv.Atoi(minuteTime[1])
+	if err != nil {
+		coldate = `0000-00-00 00:00:00`
+		return coldate
+	}
+	switch {
+	case marktime >= 50:
+		minuteTime[1] = `50`
+	case marktime >= 40:
+		minuteTime[1] = `40`
+	case marktime >= 30:
+		minuteTime[1] = `30`
+	case marktime >= 20:
+		minuteTime[1] = `20`
+	case marktime >= 10:
+		minuteTime[1] = `10`
+	default:
+		minuteTime[1] = `00`
+	}
+	//组合coldate
+	coldate = fmt.Sprintf(`%s:%s:00`, minuteTime[0], minuteTime[1])
+	return coldate
+}
+
+func FitWebsite(confilefile string) (visitwebsite string) {
+	website := strings.Split(confilefile, `/`)
+	logname := website[len(website)-1]
+	splitlog := strings.Split(logname, `.`)
+	visitwebsite = strings.Replace(logname, splitlog[len(splitlog)-1], ``, -1)
+	visitwebsite = strings.Replace(visitwebsite, splitlog[len(splitlog)-2], ``, -1)
+	visitwebsite = strings.Replace(visitwebsite, `..`, ``, -1)
+	return visitwebsite
 }
