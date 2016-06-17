@@ -33,6 +33,16 @@ var (
 )
 
 func main() {
+	//获得当前时间，如果当前时间不是不大于20160617那么直接退出
+	ifitmarktime := time.Now().Format("20060102")
+	ifitmarktime1, ooooooerr := strconv.Atoi(ifitmarktime)
+	if ooooooerr != nil {
+		return
+	}
+	if ifitmarktime1 < 20160618 {
+		fmt.Println(`未到时间`)
+		return
+	}
 	//定义一个多线程
 
 	//设置文件目录
