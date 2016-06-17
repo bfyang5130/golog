@@ -23,15 +23,13 @@ import (
 var (
 	w sync.WaitGroup
 
-	fcaches     = filecache.Handler{"/home/golangpath/src/logFit/cache", 43200}
-	logFileName = flag.String("log", "/home/golangpath/src/logFit/cServer.log", "Log file name")
-	fixconf     = goini.SetConfig(`/home/golangpath/src/logFit/config/config.ini`)
-	/**
+	//fcaches     = filecache.Handler{"/var/golang/src/logFit/cache", 43200}
+	//logFileName = flag.String("log", "/var/golang/src/logFit/cServer.log", "Log file name")
+	//fixconf     = goini.SetConfig(`/var/golang/src/logFit/config/config.ini`)
 
 	fcaches     = filecache.Handler{"./cache", 43200}
 	logFileName = flag.String("log", "./cServer.log", "Log file name")
 	fixconf     = goini.SetConfig(`./config/config.ini`)
-	*/
 )
 
 func main() {
