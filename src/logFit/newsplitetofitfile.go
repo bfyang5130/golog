@@ -50,10 +50,8 @@ func main() {
 	}
 	dbuser := fixconf.GetValue("dblink", `user`)
 	dbport := fixconf.GetValue("dblink", `port`)
-	fmt.Println(dbport)
 	cdbport, dbporterr := strconv.Atoi(dbport)
 	if dbporterr != nil {
-		fmt.Println(dbporterr)
 		fmt.Println(`数据库配置不正确`)
 		return
 	}
