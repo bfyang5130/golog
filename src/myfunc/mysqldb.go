@@ -19,6 +19,7 @@ type DBConfig struct {
 	IP           string `json:"ip"`
 	Port         int    `json:"port"`
 	Database     string `json:"dbname"`
+	Charset      string `json:"charset"`
 	MaxOpenConns int    `json:"maxOpenConns"`
 	MaxIdleConns int    `json:"maxIdleConns"`
 }
@@ -48,6 +49,7 @@ func NewInsertIndb(matchs []Accesslogss, mydb *sqlx.DB, logtype string) {
 	}
 	if _, err := mydb.Exec(bf.String(), vs...); err != nil {
 		fmt.Println(bf.String())
+
 		panic(err)
 	}
 }

@@ -8,7 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"myfunc"
-	"net/http"
+	_ "net/http"
 	_ "net/http/pprof"
 	"os"
 	"regexp"
@@ -35,9 +35,9 @@ var (
 )
 
 func main() {
-	go func() {
-		log.Println(http.ListenAndServe("localhost:6060", nil))
-	}()
+	//go func() {
+	//	log.Println(http.ListenAndServe("localhost:6060", nil))
+	//}()
 	//获得当前时间，如果当前时间不是不大于20160617那么直接退出
 	ifitmarktime := time.Now().Format("20060102")
 	ifitmarktime1, ooooooerr := strconv.Atoi(ifitmarktime)
@@ -48,15 +48,21 @@ func main() {
 		fmt.Println(`未到时间`)
 		return
 	}
-	dbc := myfunc.DBConfig{
-		UserName:     "root",
-		Password:     "tuandai1921688190",
-		IP:           "192.168.8.190",
-		Port:         3306,
-		Database:     "Tuandai_Log",
-		MaxIdleConns: 6,
-		MaxOpenConns: 6,
+	dbuser := fixconf.GetValue("dblink", `user`)
+	dbport := fixconf.GetValue("dblink", `port`)
+	fmt.Println(dbport)
+	cdbport, dbporterr := strconv.Atoi(dbport)
+	if dbporterr != nil {
+		fmt.Println(dbporterr)
+		fmt.Println(`数据库配置不正确`)
+		return
 	}
+	dbpassword := fixconf.GetValue("dblink", `password`)
+	dbip := fixconf.GetValue("dblink", `ip`)
+	dbdbname := fixconf.GetValue("dblink", `dbname`)
+	dbcharset := fixconf.GetValue("dblink", `charset`)
+
+	dbc := myfunc.DBConfig{dbuser, dbpassword, dbip, cdbport, dbdbname, dbcharset, 6, 6}
 	if db, err := dbInit(dbc); err != nil {
 		panic(err)
 	} else {
@@ -455,7 +461,7 @@ func goFitOneIisFile(fitChannel <-chan string, nomatchfilepath string, logtype s
 //root:jia123@tcp(127.0.0.1:3306)/godb
 //jdbc:mysql://192.168.8.190/Tuandai_Log
 func dbInit(dbconfig myfunc.DBConfig) (*sqlx.DB, error) {
-	myUrl := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=true&charset=utf8", dbconfig.UserName, dbconfig.Password, dbconfig.IP, dbconfig.Port, dbconfig.Database)
+	myUrl := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=true&charset=%s", dbconfig.UserName, dbconfig.Password, dbconfig.IP, dbconfig.Port, dbconfig.Database, dbconfig.Charset)
 	db, err := sqlx.Connect("mysql", myUrl)
 	if err != nil {
 		return nil, err
