@@ -1,13 +1,56 @@
 package myfunc
 
 import (
+	"bytes"
 	"database/sql"
 	"fmt"
 
 	"github.com/DannyBen/filecache"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
 	"github.com/widuu/goini"
 )
+
+//root:tuandai1921688190@tcp(192.168.8.190:3036)/Tuandai_Log
+//root:jia123@tcp(127.0.0.1:3306)/godb
+type DBConfig struct {
+	UserName     string `json:"username"`
+	Password     string `json:"password"`
+	IP           string `json:"ip"`
+	Port         int    `json:"port"`
+	Database     string `json:"dbname"`
+	MaxOpenConns int    `json:"maxOpenConns"`
+	MaxIdleConns int    `json:"maxIdleConns"`
+}
+
+func NewInsertIndb(matchs []Accesslogss, mydb *sqlx.DB, logtype string) {
+	var InsertDBString string
+	switch logtype {
+	case `nginx`:
+		InsertDBString = "INSERT INTO AccessLogss (Ip1,country,province,city, date_reg, request_method,request_url,request_protocol,status_code, body_size, from_url, agent,plat,bower,mobile_plat, request_time,visitwebsite,proxy,collectimtime) VALUES"
+	case `iis`:
+		InsertDBString = "INSERT INTO IisAccessLog (Ip1,country,province,city, date_reg, request_method,request_url,request_protocol,status_code, body_size, from_url, agent,plat,bower,mobile_plat, request_time,visitwebsite,proxy,collectimtime) VALUES"
+
+	default:
+		InsertDBString = "INSERT INTO AccessLogss (Ip1,country,province,city, date_reg, request_method,request_url,request_protocol,status_code, body_size, from_url, agent,plat,bower,mobile_plat, request_time,visitwebsite,proxy,collectimtime) VALUES"
+	}
+	bf := bytes.NewBufferString(InsertDBString)
+	il := len(matchs)
+	vs := make([]interface{}, 0)
+	//fmt.Println(matchs)
+	for k, oneMatch := range matchs {
+		if k == (il - 1) {
+			bf.WriteString("(?,?,?,?,?,?, ?,?, ?, ?,?, ?, ?,?,?,?,?,?,?);")
+		} else {
+			bf.WriteString("(?,?,?,?,?,?, ?,?, ?, ?,?, ?, ?,?,?,?,?,?,?),")
+		}
+		vs = append(vs, oneMatch.Ip1, oneMatch.Country, oneMatch.Province, oneMatch.City, oneMatch.DateReg, oneMatch.Request_method, oneMatch.Request_url, oneMatch.Request_protocol, oneMatch.StatusCode, oneMatch.BodySize, oneMatch.FromUrl, oneMatch.Agent, oneMatch.Plat, oneMatch.Bower, oneMatch.Mobile_plat, oneMatch.RequestTime, oneMatch.Visitwebsite, oneMatch.Proxy, oneMatch.Collectiontime)
+	}
+	if _, err := mydb.Exec(bf.String(), vs...); err != nil {
+		fmt.Println(bf.String())
+		panic(err)
+	}
+}
 
 //原表是MysqlVisitDate新表是
 func InsertIndb(matchs []Accesslogss, fcaches filecache.Handler, fixconf *goini.Config, configName string) {
