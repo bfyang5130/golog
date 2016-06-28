@@ -170,7 +170,7 @@ func main() {
 				//因为传进来的configName是一个完整的路径，所以通过完整的路径来判断代理和站点
 				//如果字符串包括17_nginx_proxy
 				var proxy int
-				if strings.Contains(configName, `17_nginx_proxy`) {
+				if strings.Contains(fitLastReadPosition, `17_nginx_proxy`) {
 					proxy = 17
 				} else {
 					proxy = 21
