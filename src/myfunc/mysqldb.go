@@ -26,6 +26,7 @@ type DBConfig struct {
 
 func NewInsertIndb(matchs []Accesslogss, mydb *sqlx.DB, logtype string) {
 	var InsertDBString string
+	var inserAttack string
 	switch logtype {
 	case `nginx`:
 		InsertDBString = "INSERT INTO AccessLogss (Ip1,country,province,city, date_reg, request_method,request_url,request_protocol,status_code, body_size, from_url, agent,plat,bower,mobile_plat, request_time,visitwebsite,proxy,collectimtime) VALUES"
@@ -35,9 +36,15 @@ func NewInsertIndb(matchs []Accesslogss, mydb *sqlx.DB, logtype string) {
 	default:
 		InsertDBString = "INSERT INTO AccessLogss (Ip1,country,province,city, date_reg, request_method,request_url,request_protocol,status_code, body_size, from_url, agent,plat,bower,mobile_plat, request_time,visitwebsite,proxy,collectimtime) VALUES"
 	}
+	inserAttack = `INSERT INTO AccessLogSqlInject (user_ip,request_url,from_url,access_str,request_time,source, log_type) VALUES`
+	//这是一个正常的BF用来装正常的SQL
 	bf := bytes.NewBufferString(InsertDBString)
 	il := len(matchs)
 	vs := make([]interface{}, 0)
+	//定义一个注入攻击的BF用来装注入的信息。
+	bfAttack := bytes.NewBufferString(inserAttack)
+	vsAttack := make([]interface{}, 0)
+	vaAttackCount := 0
 	//fmt.Println(matchs)
 	for k, oneMatch := range matchs {
 		if k == (il - 1) {
@@ -46,6 +53,25 @@ func NewInsertIndb(matchs []Accesslogss, mydb *sqlx.DB, logtype string) {
 			bf.WriteString("(?,?,?,?,?,?, ?,?, ?, ?,?, ?, ?,?,?,?,?,?,?),")
 		}
 		vs = append(vs, oneMatch.Ip1, oneMatch.Country, oneMatch.Province, oneMatch.City, oneMatch.DateReg, oneMatch.Request_method, oneMatch.Request_url, oneMatch.Request_protocol, oneMatch.StatusCode, oneMatch.BodySize, oneMatch.FromUrl, oneMatch.Agent, oneMatch.Plat, oneMatch.Bower, oneMatch.Mobile_plat, oneMatch.RequestTime, oneMatch.Visitwebsite, oneMatch.Proxy, oneMatch.Collectiontime)
+		//判断oneMatch.Request_url是不是攻击语句
+		if TaskIsAttack(oneMatch.Request_url) {
+			vaAttackCount++
+			vsAttack = append(vsAttack, oneMatch.Ip1, oneMatch.Request_url, oneMatch.FromUrl, oneMatch.Agent, oneMatch.DateReg, oneMatch.Proxy, oneMatch.Visitwebsite)
+		}
+	}
+	for vsi := 0; vsi < vaAttackCount; vsi++ {
+		if vsi == (vaAttackCount - 1) {
+			bfAttack.WriteString("(?,?,?,?,?,?,?);")
+		} else {
+			bfAttack.WriteString("(?,?,?,?,?,?,?),")
+		}
+	}
+	if len(vsAttack) > 0 {
+		if _, err := mydb.Exec(bfAttack.String(), vsAttack...); err != nil {
+			fmt.Println(bfAttack.String())
+
+			panic(err)
+		}
 	}
 	if _, err := mydb.Exec(bf.String(), vs...); err != nil {
 		fmt.Println(bf.String())
@@ -168,6 +194,18 @@ type Accesslogss struct {
 	Proxy            int
 	Collectiontime   string
 	Marksize         int64
+}
+
+/**
+大家好，我是一个注入攻击的模型
+AccessLogSqlInject
+*/
+type AccessLogSqlInject struct {
+	User_ip      string
+	Access_str   string
+	Request_time string
+	Source       string
+	Log_type     string
 }
 
 /**

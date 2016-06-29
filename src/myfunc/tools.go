@@ -8,6 +8,7 @@ import (
 	"net"
 	"os"
 	"path"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -517,4 +518,23 @@ func ReadIpDatToBuf(fileIpPath string) (buf []byte, err error) {
 		return buf, err
 	}
 	return buf, nil
+}
+
+func TaskIsAttack(request string) bool {
+	reString := []string{}
+	reString = append(reString, `\+|`)
+	reString = append(reString, `%20|\/bin\/|Match1:|webscan\.|\'|\/\*|\.\.\/|\.\/|load_file|outfile|(select|union|update|insert|drop|exec)%20|(select|union|update|insert|drop|exec) `)
+	fitline := []byte(request)
+	var replaceString string
+
+	for _, reV := range reString {
+		replaceString = fmt.Sprintf(`%s%s`, replaceString, reV)
+	}
+	replaceString = replaceString
+	reg := regexp.MustCompile(replaceString)
+	match := reg.FindAllSubmatch(fitline, -1)
+	if len(match) > 0 {
+		return true
+	}
+	return false
 }

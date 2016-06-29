@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 	"sync"
 	"time"
@@ -12,6 +13,21 @@ var (
 )
 
 func main() {
+	reString := []string{}
+	reString = append(reString, `\+|`)
+	reString = append(reString, `%20|\/bin\/|Match1:|webscan\.|\'|\/\*|\.\.\/|\.\/|load_file|outfile|(select|union|update|insert|drop|exec)%20|(select|union|update|insert|drop|exec) `)
+	fitline := []byte(`abc`)
+	var replaceString string
+
+	for _, reV := range reString {
+		replaceString = fmt.Sprintf(`%s%s`, replaceString, reV)
+	}
+	replaceString = replaceString
+	fmt.Println(replaceString)
+	reg := regexp.MustCompile(replaceString)
+	match := reg.FindAllSubmatch(fitline, -1)
+	fmt.Println(len(match))
+	return
 	/**
 	configName := `dfdcdc/dfdfd/cdcdsadf/dfdfdd/www.go.com.access.log`
 	website := strings.Split(configName, `/`)
